@@ -1,6 +1,6 @@
 import React, { ElementType, FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { withReact, ReactEditor, Slate, Editable, useSlate } from "slate-react";
-import { BaseEditor, createEditor, Descendant, Transforms, Editor, Text, Range, Element as SlateElement } from "slate";
+import { BaseEditor, createEditor, Descendant, Transforms, Editor, Range, Element as SlateElement } from "slate";
 import Toolbar, { ToolbarButton } from "../../components/Toolbar";
 import { Bold, H1, H2, Italic, ListBullet, ListNumber } from "kaleidoscope/src/global/icons";
 import { EditorContext } from "views/Editor";
@@ -120,28 +120,31 @@ const TextEditor: FC<TextEditorProps> = ({
     onChange?.(newValue);
   };
 
-  const renderElement = useCallback((props) => {
-    const { type } = props.element;
+  const renderElement = useCallback(
+    (props) => {
+      const { type } = props.element;
 
-    const shouldRender = (element: TextEditorBlock) => {
-      return type === element && allow.includes(element);
-    };
+      const shouldRender = (element: TextEditorBlock) => {
+        return type === element && allow.includes(element);
+      };
 
-    switch (true) {
-      case shouldRender(TextEditorBlock.H1):
-        return <H1Element {...props} />;
-      case shouldRender(TextEditorBlock.H2):
-        return <H2Element {...props} />;
-      case shouldRender(TextEditorBlock.OrderedList):
-        return <OLElement {...props} />;
-      case shouldRender(TextEditorBlock.UnorderedList):
-        return <ULElement {...props} />;
-      case shouldRender(TextEditorBlock.ListItem):
-        return <LIElement {...props} />;
-      default:
-        return <DefaultElement {...props} />;
-    }
-  }, []);
+      switch (true) {
+        case shouldRender(TextEditorBlock.H1):
+          return <H1Element {...props} />;
+        case shouldRender(TextEditorBlock.H2):
+          return <H2Element {...props} />;
+        case shouldRender(TextEditorBlock.OrderedList):
+          return <OLElement {...props} />;
+        case shouldRender(TextEditorBlock.UnorderedList):
+          return <ULElement {...props} />;
+        case shouldRender(TextEditorBlock.ListItem):
+          return <LIElement {...props} />;
+        default:
+          return <DefaultElement {...props} />;
+      }
+    },
+    [DefaultElement, allow],
+  );
 
   const renderLeaf = useCallback((props) => {
     return <Leaf {...props} />;
@@ -149,71 +152,9 @@ const TextEditor: FC<TextEditorProps> = ({
 
   return (
     <Slate editor={editor} value={internalValue} onChange={handleChange}>
-      {allow.length > 0 && (
-        <TextEditorToolbar>
-          {allow.includes(TextEditorBlock.H1) && (
-            <ToolbarButton
-              icon={<H1 />}
-              selected={isBlockActive(editor, TextEditorBlock.H1)}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                toggleBlock(editor, TextEditorBlock.H1);
-              }}
-            />
-          )}
-          {allow.includes(TextEditorBlock.H2) && (
-            <ToolbarButton
-              icon={<H2 />}
-              selected={isBlockActive(editor, TextEditorBlock.H2)}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                toggleBlock(editor, TextEditorBlock.H2);
-              }}
-            />
-          )}
-          {allow.includes(TextEditorMark.Bold) && (
-            <ToolbarButton
-              icon={<Bold />}
-              selected={isMarkActive(editor, TextEditorMark.Bold)}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                toggleMark(editor, TextEditorMark.Bold);
-              }}
-            />
-          )}
-          {allow.includes(TextEditorMark.Italic) && (
-            <ToolbarButton
-              icon={<Italic />}
-              selected={isMarkActive(editor, TextEditorMark.Italic)}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                toggleMark(editor, TextEditorMark.Italic);
-              }}
-            />
-          )}
-          {allow.includes(TextEditorBlock.UnorderedList) && (
-            <ToolbarButton
-              icon={<ListBullet />}
-              selected={isBlockActive(editor, TextEditorBlock.UnorderedList)}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                toggleBlock(editor, TextEditorBlock.UnorderedList);
-              }}
-            />
-          )}
-          {allow.includes(TextEditorBlock.OrderedList) && (
-            <ToolbarButton
-              icon={<ListNumber />}
-              selected={isBlockActive(editor, TextEditorBlock.OrderedList)}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                toggleBlock(editor, TextEditorBlock.OrderedList);
-              }}
-            />
-          )}
-        </TextEditorToolbar>
-      )}
+      {allow.length > 0 && <TextEditorToolbar allow={allow} />}
       <Editable
+        className="proto-text-editor"
         readOnly={preview}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -283,7 +224,11 @@ const isMarkActive = (editor: Editor, format: TextEditorMark) => {
   return marks ? marks[format] === true : false;
 };
 
-const TextEditorToolbar: FC = ({ children }) => {
+interface TextEditorToolbarProps {
+  allow?: TextEditorElement[];
+}
+
+const TextEditorToolbar: FC<TextEditorToolbarProps> = ({ allow }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const editor = useSlate();
   const prevPosition = useRef(position);
@@ -304,6 +249,7 @@ const TextEditorToolbar: FC = ({ children }) => {
 
     const updatePosition = () => {
       const domSelection = window.getSelection();
+      if (!domSelection || domSelection.rangeCount <= 0) return;
       const domRange = domSelection.getRangeAt(0);
       const rect = domRange.getBoundingClientRect();
 
@@ -331,7 +277,66 @@ const TextEditorToolbar: FC = ({ children }) => {
 
   return (
     <Toolbar visible={!isHidden} position={isHidden ? prevPosition.current : position} offset={4}>
-      {children}
+      {allow.includes(TextEditorBlock.H1) && (
+        <ToolbarButton
+          icon={<H1 />}
+          selected={isBlockActive(editor, TextEditorBlock.H1)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            toggleBlock(editor, TextEditorBlock.H1);
+          }}
+        />
+      )}
+      {allow.includes(TextEditorBlock.H2) && (
+        <ToolbarButton
+          icon={<H2 />}
+          selected={isBlockActive(editor, TextEditorBlock.H2)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            toggleBlock(editor, TextEditorBlock.H2);
+          }}
+        />
+      )}
+      {allow.includes(TextEditorMark.Bold) && (
+        <ToolbarButton
+          icon={<Bold />}
+          selected={isMarkActive(editor, TextEditorMark.Bold)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            toggleMark(editor, TextEditorMark.Bold);
+          }}
+        />
+      )}
+      {allow.includes(TextEditorMark.Italic) && (
+        <ToolbarButton
+          icon={<Italic />}
+          selected={isMarkActive(editor, TextEditorMark.Italic)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            toggleMark(editor, TextEditorMark.Italic);
+          }}
+        />
+      )}
+      {allow.includes(TextEditorBlock.UnorderedList) && (
+        <ToolbarButton
+          icon={<ListBullet />}
+          selected={isBlockActive(editor, TextEditorBlock.UnorderedList)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            toggleBlock(editor, TextEditorBlock.UnorderedList);
+          }}
+        />
+      )}
+      {allow.includes(TextEditorBlock.OrderedList) && (
+        <ToolbarButton
+          icon={<ListNumber />}
+          selected={isBlockActive(editor, TextEditorBlock.OrderedList)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            toggleBlock(editor, TextEditorBlock.OrderedList);
+          }}
+        />
+      )}
     </Toolbar>
   );
 };

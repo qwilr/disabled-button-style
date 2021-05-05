@@ -3,11 +3,12 @@ import Block from "./Block";
 import TextEditor, { TextEditorBlock } from "../TextEditor";
 import { EditorWrapper } from ".";
 import { Descendant } from "slate";
+import WidgetSelector from "./WidgetSelector";
 
 const Page: FC = () => {
   return (
     <EditorWrapper title="Project title">
-      <Block
+      {/* <Block
         textAlign="center"
         backgroundImage="https://images.unsplash.com/photo-1502758775495-0ec4a639aa64?q=80&fm=jpg&crop=entropy&w=1080&fit=max"
         theme="dark"
@@ -34,7 +35,7 @@ const Page: FC = () => {
             },
           ]}
         />
-      </Block>
+      </Block> */}
       <Block>
         <TextEditor
           value={[
@@ -66,6 +67,10 @@ const Page: FC = () => {
             },
           ]}
         />
+        <WidgetSelector>
+          {/* <div>Hello</div> */}
+          <div style={{ width: "40px", height: "40px", backgroundColor: "black" }}></div>
+        </WidgetSelector>
       </Block>
       <Block theme="dark" backgroundColor="#34495e" textAlign="center">
         <TextEditor

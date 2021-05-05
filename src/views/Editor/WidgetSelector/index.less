@@ -1,0 +1,70 @@
+@borderOffset: -8px;
+@borderWidth: 4px;
+
+.widget-selector {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+}
+
+.widget-selector__target {
+  position: absolute;
+  //   background-color: rgba(@grey, 0.1);
+
+  &-top {
+    width: calc(100% - 2 * @borderOffset);
+    height: -@borderOffset;
+    top: @borderOffset;
+    left: @borderOffset;
+  }
+
+  &-bottom {
+    width: calc(100% - 2 * @borderOffset);
+    height: -@borderOffset;
+    bottom: @borderOffset;
+    left: @borderOffset;
+  }
+
+  &-right {
+    width: -@borderOffset;
+    height: 100%;
+    right: @borderOffset;
+  }
+
+  &-left {
+    width: -@borderOffset;
+    height: 100%;
+    left: @borderOffset;
+  }
+}
+
+.widget-selector__border {
+  width: fit-content;
+  height: fit-content;
+  //   box-shadow: 0 0 0 3px rgba(@blue, 0);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: @borderOffset;
+    bottom: @borderOffset;
+    left: @borderOffset;
+    right: @borderOffset;
+    pointer-events: none;
+    // box-shadow: 0 0 0 3px rgba(@grey, 0);
+    border: @borderWidth solid rgba(@grey, 0);
+    border-radius: 4px;
+    transition-property: border;
+    transition-duration: 100ms;
+    transition-timing-function: @bezier-standard;
+  }
+
+  &--hover::before {
+    border: @borderWidth solid rgba(@grey, 0.25);
+    // box-shadow: 0 0 0 3px rgba(@grey, 0.25);
+  }
+
+  &--selected::before {
+    border: @borderWidth solid rgba(@blue, 0.5);
+  }
+}
