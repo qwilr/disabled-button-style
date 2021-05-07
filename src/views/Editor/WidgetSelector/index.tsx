@@ -63,18 +63,18 @@ const WidgetSelector: FC<WidgetSelectorProps> = (
 
   return (
     <div className="widget-selector" ref={widgetSelectorRef}>
-      <WidgetSelectorTarget
+      {/* <WidgetSelectorTarget
         position="top"
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
         onClick={handleClick}
-      />
-      {/* <div
+      /> */}
+      <div
         className={classNames(["widget-selector__target", "widget-selector__target-top"])}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
         onClick={handleClick}
-      /> */}
+      />
       <div
         className={classNames(["widget-selector__target", "widget-selector__target-bottom"])}
         onMouseOver={handleMouseOver}
@@ -94,10 +94,13 @@ const WidgetSelector: FC<WidgetSelectorProps> = (
         onClick={handleClick}
       />
       <div
-        className={classNames("widget-selector__border", {
-          "widget-selector__border--hover": isHovering,
-          "widget-selector__border--selected": isSelected,
-        })}
+        className={classNames("widget-selector__border", [
+          {
+            "widget-selector__border--hover": isHovering,
+            "widget-selector__border--selected": isSelected,
+          },
+          { "widget-selector__border-offset": offsetBorder },
+        ])}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
         onClick={innerClickable ? handleClick : null}
@@ -110,19 +113,19 @@ const WidgetSelector: FC<WidgetSelectorProps> = (
 
 // Attempt to set up a sub component for the WidgetSelectorTarget, but couldn't figure out how to abstract the isSelected to be a global state
 
-interface WidgetSelectorTargetProps {
-  position: string;
-  onMouseOver?: () => void;
-  onMouseOut?: () => void;
-  onClick?: () => void;
-}
+// interface WidgetSelectorTargetProps {
+//   position: string;
+//   onMouseOver?: () => void;
+//   onMouseOut?: () => void;
+//   onClick?: () => void;
+// }
 
-const WidgetSelectorTarget: FC<WidgetSelectorTargetProps> = (props) => {
-  return (
-    <>
-      <div className={classNames(["widget-selector__target", `widget-selector__target-${props.position}`])}></div>
-    </>
-  );
-};
+// const WidgetSelectorTarget: FC<WidgetSelectorTargetProps> = (props) => {
+//   return (
+//     <>
+//       <div className={classNames(["widget-selector__target", `widget-selector__target-${props.position}`])}></div>
+//     </>
+//   );
+// };
 
 export default WidgetSelector;

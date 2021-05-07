@@ -1,4 +1,5 @@
 @borderOffset: -8px;
+@borderOffsetNone: -4px;
 @borderWidth: 4px;
 
 .widget-selector {
@@ -16,7 +17,6 @@
     height: -@borderOffset;
     top: @borderOffset;
     left: @borderOffset;
-    background-color: black;
   }
 
   &-bottom {
@@ -44,13 +44,27 @@
   height: fit-content;
   //   box-shadow: 0 0 0 3px rgba(@blue, 0);
 
+  & {
+    &::before {
+      top: @borderOffsetNone;
+      bottom: @borderOffsetNone;
+      left: @borderOffsetNone;
+      right: @borderOffsetNone;
+    }
+  }
+
+  &-offset {
+    &::before {
+      top: @borderOffset;
+      bottom: @borderOffset;
+      left: @borderOffset;
+      right: @borderOffset;
+    }
+  }
+
   &::before {
     content: "";
     position: absolute;
-    top: @borderOffset;
-    bottom: @borderOffset;
-    left: @borderOffset;
-    right: @borderOffset;
     pointer-events: none;
     // box-shadow: 0 0 0 3px rgba(@grey, 0);
     border: @borderWidth solid rgba(@grey, 0);

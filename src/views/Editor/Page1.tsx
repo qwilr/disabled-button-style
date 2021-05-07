@@ -3,8 +3,8 @@ import Block from "./Block";
 import TextEditor, { TextEditorBlock } from "../TextEditor";
 import { EditorWrapper } from ".";
 import { Descendant } from "slate";
-import WidgetSelector from "./WidgetSelector";
 import ImageWidget from "./ImageWidget";
+import TwoColumnsWidget from "./TwoColumnsWidget";
 
 const Page: FC = () => {
   return (
@@ -68,6 +68,7 @@ const Page: FC = () => {
             },
           ]}
         />
+        <TwoColumnsWidget />
         <ImageWidget
           imageURL="https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=648&q=80"
           width="100%"

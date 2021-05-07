@@ -10,7 +10,7 @@ interface ImageWidgetProps {
 
 const ImageWidget: FC<ImageWidgetProps> = (props) => {
   return (
-    <WidgetSelector offsetBorder={false} resizeable={true}>
+    <WidgetSelector offsetBorder={true} resizeable={true}>
       <img
         className="image-widget__content"
         style={{ width: `${props.width}`, height: `${props.height}` }}
