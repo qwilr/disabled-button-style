@@ -1,0 +1,49 @@
+.widget-resize-handle {
+  @handleSize: 24px;
+
+  width: @handleSize;
+  height: @handleSize;
+  border-radius: calc(@handleSize / 2);
+  background-color: @blue;
+  position: absolute;
+
+  &--top {
+    top: calc(0px - (@handleSize / 2) - 2px);
+    left: calc(50% - (@handleSize / 2));
+  }
+
+  &--bottom {
+    bottom: calc(0px - (@handleSize / 2) - 2px);
+    left: calc(50% - (@handleSize / 2));
+  }
+
+  &--left {
+    left: calc(0px - (@handleSize / 2) - 2px);
+    top: calc(50% - (@handleSize / 2));
+  }
+
+  &--right {
+    right: calc(0px - (@handleSize / 2) - 2px);
+    top: calc(50% - (@handleSize / 2));
+  }
+
+  &--top-left {
+    top: calc(0px - (@handleSize / 2) - 2px);
+    left: calc(0px - (@handleSize / 2) - 2px);
+  }
+
+  &--top-right {
+    top: calc(0px - (@handleSize / 2) - 2px);
+    right: calc(0px - (@handleSize / 2) - 2px);
+  }
+
+  &--bottom-left {
+    bottom: calc(0px - (@handleSize / 2) - 2px);
+    left: calc(0px - (@handleSize / 2) - 2px);
+  }
+
+  &--bottom-right {
+    bottom: calc(0px - (@handleSize / 2) - 2px);
+    right: calc(0px - (@handleSize / 2) - 2px);
+  }
+}

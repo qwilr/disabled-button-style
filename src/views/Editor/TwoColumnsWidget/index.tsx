@@ -7,42 +7,15 @@ import { ButtonSize, ButtonTheme, IconButton, Tooltip, TooltipPosition } from "k
 import { Swap } from "kaleidoscope/src/global/icons";
 
 const TwoColsWidget = () => {
-  const [widgetHovering, setWidgetHovering] = useState(false);
-  const [widgetSelected, setWidgetSelected] = useState(false);
-  //   const [imageHovering, setImageHovering] = useState(false);
-  //   const [imageSelected, setImageSelected] = useState(false);
-
   const twoColsWidgetRef = useRef(null);
-  const twoColsImageRef = useRef(null);
-
-  const handleWidgetHover = (event) => {
-    if (event.target === twoColsWidgetRef.current) {
-      setWidgetHovering(true);
-      //   setImageHovering(false);
-      console.log("widget");
-    } else if (event.target === twoColsImageRef.current) {
-      //   setImageHovering(true);
-      setWidgetHovering(false);
-      console.log("image");
-    } else {
-      setWidgetHovering(false);
-      //   setImageHovering(false);
-      console.log("none");
-    }
-  };
-
-  const handleWidgetExit = (event) => {
-    setWidgetHovering(false);
-    // setImageHovering(false);
-  };
 
   return (
-    <WidgetSelector offsetBorder={true}>
+    <WidgetSelector offsetBorder={true} innerClickable={false}>
       <div
         className={"two-cols-widget"}
         ref={twoColsWidgetRef}
-        onMouseOver={handleWidgetHover}
-        onMouseLeave={handleWidgetExit}
+        // onMouseOver={handleWidgetHover}
+        // onMouseLeave={handleWidgetExit}
       >
         <div className="two-cols-widget__col-left">
           <TextEditor

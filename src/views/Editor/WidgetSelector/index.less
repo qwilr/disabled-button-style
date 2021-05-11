@@ -1,6 +1,6 @@
-@borderOffset: -8px;
-@borderOffsetNone: -4px;
+@borderOffset: -16px;
 @borderWidth: 4px;
+@borderOffsetNone: -@borderWidth;
 
 .widget-selector {
   position: relative;
@@ -16,7 +16,11 @@
     width: calc(100% - 2 * @borderOffset);
     height: -@borderOffset;
     top: @borderOffset;
-    left: @borderOffset;
+    // left: @borderOffset;
+    // height: calc(-@borderOffset - @borderOffset + "px");
+    // top: calc(@borderOffset * 1.5);
+    // left: calc(@borderOffset * 1.5);
+    // background-color: black;
   }
 
   &-bottom {
@@ -27,19 +31,23 @@
   }
 
   &-right {
-    width: -@borderOffset;
     height: 100%;
+    width: -@borderOffset;
     right: @borderOffset;
+    // width: calc(-@borderOffset * 1.5);
+    // right: calc(@borderOffset * 1.5);
   }
 
   &-left {
-    width: -@borderOffset;
     height: 100%;
+    width: -@borderOffset;
     left: @borderOffset;
+    // width: calc(- (@borderOffset * 1.5));
+    // left: calc(@borderOffset * 1.5);
   }
 }
 
-.widget-selector__border {
+.widget-selector__container {
   width: fit-content;
   height: fit-content;
   //   box-shadow: 0 0 0 3px rgba(@blue, 0);
@@ -67,19 +75,38 @@
     position: absolute;
     pointer-events: none;
     // box-shadow: 0 0 0 3px rgba(@grey, 0);
-    border: @borderWidth solid rgba(@grey, 0);
-    border-radius: 4px;
+    border: 2px solid rgba(@grey, 0);
+    border-radius: 8px;
     transition-property: border;
-    transition-duration: 100ms;
+    transition-duration: 50ms;
     transition-timing-function: @bezier-standard;
   }
 
   &--hover::before {
-    border: @borderWidth solid rgba(@grey, 0.25);
+    border: 2px solid rgba(@grey, 0.25);
+    // box-shadow: 0 0 0 3px rgba(@grey, 0.25);
+  }
+
+  &--hover-clickable::before {
+    border: @borderWidth solid rgba(@blue, 0.25);
     // box-shadow: 0 0 0 3px rgba(@grey, 0.25);
   }
 
   &--selected::before {
     border: @borderWidth solid rgba(@blue, 0.5);
   }
+}
+
+.widget-selector__resize-handles {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: transform, opacity;
+  transition-duration: @duration-s;
+  transition-timing-function: @bezier-fastout-slowin;
+}
+
+.widget-selector__resize-handles--enter-active,
+.widget-selector__resize-handles--enter-done {
+  opacity: 1;
+  transform: scale(1);
 }

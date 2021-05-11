@@ -1,3 +1,4 @@
+import { randomString } from "kaleidoscope/src/utils";
 import React, { FC, useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import WidgetSelector from "../WidgetSelector";
@@ -9,8 +10,10 @@ interface ImageWidgetProps {
 }
 
 const ImageWidget: FC<ImageWidgetProps> = (props) => {
+  const widgetSelectors = [{ id: randomString() }];
+
   return (
-    <WidgetSelector offsetBorder={true} resizeable={true}>
+    <WidgetSelector offsetBorder={false} resizeable={true} innerClickable={true}>
       <img
         className="image-widget__content"
         style={{ width: `${props.width}`, height: `${props.height}` }}
