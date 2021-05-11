@@ -5,8 +5,11 @@ import { EditorWrapper } from ".";
 import { Descendant } from "slate";
 import ImageWidget from "./ImageWidget";
 import TwoColumnsWidget from "./TwoColumnsWidget";
+import { TextInput } from "kaleidoscope/src";
 
 const Page: FC = () => {
+  const [blockColor, setBlockColor] = useState("#FFFFFF");
+
   return (
     <EditorWrapper title="Project title">
       {/* <Block
@@ -37,7 +40,8 @@ const Page: FC = () => {
           ]}
         />
       </Block> */}
-      <Block>
+      <Block backgroundColor={blockColor}>
+        <TextInput label="Block color" onChange={(value) => setBlockColor(value)} />
         <TextEditor
           value={[
             {
