@@ -1,0 +1,61 @@
+.accordion-card-widget {
+  display: grid;
+  // overflow: hidden;
+  // margin-bottom: @space-s;
+  // padding: @space-s;
+
+  // font-size: 24px;
+  // line-height: 1.4;
+  // text-align: left;
+  // position: relative;
+}
+
+.accordion-card-widget__header {
+  gap: 0;
+
+  h1,
+  h2,
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.accordion-card-widget__header-content {
+  display: inline-flex;
+  justify-self: stretch;
+  align-items: end;
+  gap: @space-s;
+  width: 100%;
+  // padding: @space-s @space-m;
+}
+
+.accordion-card-widget__header-button {
+  display: grid;
+  align-items: center;
+  align-self: stretch;
+  // height: 1.4em;
+  // font-size: 24px;
+}
+
+.accordion-card-widget__header-text {
+  display: grid;
+  align-self: stretch;
+  width: 100%;
+}
+
+// .accordion-card-widget__body {
+//   // padding: @space-m;
+//   // color: @slate;
+// }
+
+.accordion-card-widget__body {
+  padding-top: @space-s;
+  padding-left: @space-xl;
+}
+
+.accordion-card-widget__body-transition-wrapper {
+  // Hide content while it's transitioning
+  overflow: hidden;
+  // Useful to split out the transition properties if transitioning multiple properties, or if you have different timing/duration for diff properties
+  transition: height @duration-m @bezier-fastout-slowin;
+}

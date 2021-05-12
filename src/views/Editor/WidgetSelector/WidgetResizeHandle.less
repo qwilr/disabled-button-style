@@ -6,6 +6,26 @@
   border-radius: calc(@handleSize / 2);
   background-color: @blue;
   position: absolute;
+  cursor: col-resize;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: transform, opacity;
+  transition-duration: @duration-s;
+  transition-timing-function: @bezier-fastout-slowin;
+
+  &--offset {
+    @offset: 16px;
+
+    &--left {
+      left: calc(0px - (@handleSize / 2) - 2px - @offset);
+      top: calc(50% - (@handleSize / 2));
+    }
+
+    &--right {
+      right: calc(0px - (@handleSize / 2) - 2px - @offset);
+      top: calc(50% - (@handleSize / 2));
+    }
+  }
 
   &--top {
     top: calc(0px - (@handleSize / 2) - 2px);
@@ -45,5 +65,15 @@
   &--bottom-right {
     bottom: calc(0px - (@handleSize / 2) - 2px);
     right: calc(0px - (@handleSize / 2) - 2px);
+  }
+}
+
+.widget-selector__resize-handle--enter-active,
+.widget-selector__resize-handle--enter-done {
+  opacity: 1;
+  transform: scale(1);
+
+  &:hover {
+    transform: scale(1.2);
   }
 }

@@ -6,17 +6,18 @@ import WidgetSelector from "../WidgetSelector";
 interface ImageWidgetProps {
   imageURL: string;
   width: string;
-  height: string;
+  height?: string;
+  aspectRatio?: string;
 }
 
 const ImageWidget: FC<ImageWidgetProps> = (props) => {
   const widgetSelectors = [{ id: randomString() }];
 
   return (
-    <WidgetSelector offsetBorder={false} resizeable={true} innerClickable={true}>
+    <WidgetSelector offsetBorder={false} resizeable={true} innerSelect={true}>
       <img
         className="image-widget__content"
-        style={{ width: `${props.width}`, height: `${props.height}` }}
+        style={{ width: `${props.width}`, height: `${props.height}`, aspectRatio: `${props.aspectRatio}` }}
         src={`${props.imageURL}`}
       />
     </WidgetSelector>

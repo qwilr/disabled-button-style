@@ -2,8 +2,8 @@ import classNames from "classnames";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Delete } from "kaleidoscope/src/global/icons";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
-import React, { FC, useRef, useState } from "react";
-import { CSSTransition } from "react-transition-group";
+import React, { CSSProperties, FC, useRef, useState } from "react";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import WidgetResizeHandle, { HandlePosition } from "./WidgetResizeHandle";
 
 export enum WidgetType {
@@ -15,21 +15,18 @@ export enum WidgetType {
 
 interface WidgetSelectorProps {
   /**
-   * Define the widget type to surface widget-specific controls
-   */
-  type?: WidgetType;
-  /**
    * If true, then show resizing handles
    */
   resizeable?: boolean;
   /**
    * If true, then set the whole inner area to be clickable
    */
-  innerClickable?: boolean;
+  innerSelect?: boolean;
   /**
    * If true, then offset the selection border from the edge of the child
    */
   offsetBorder?: boolean;
+  offsetValue?: string;
   /**
    * Create a unique identifier for the component instance
    */
@@ -44,10 +41,10 @@ interface WidgetSelectorProps {
 
 const WidgetSelector: FC<WidgetSelectorProps> = ({
   children,
-  type,
   resizeable,
-  innerClickable,
+  innerSelect,
   offsetBorder,
+  offsetValue = "-16px",
 }: WidgetSelectorProps) => {
   const [isHovering, setIsHovering] = useState(false);
   const [isHoveringClickable, setIsHoveringClickable] = useState(false);
@@ -70,7 +67,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   };
 
   const handleClick = (event) => {
-    if (widgetSelectorContainerRef.current.contains(event.target) && innerClickable) {
+    if (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) {
       setIsSelected(true);
     } else if (
       event.target === widgetSelectorBorderTopRef.current ||
@@ -79,16 +76,18 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       event.target === widgetSelectorBorderRightRef.current
     ) {
       setIsSelected(true);
-    } else if (!innerClickable) {
+    } else if (!innerSelect) {
       setIsHovering(false);
       setIsSelected(false);
-      console.log(isHovering);
+      event.stopPropagation();
     }
   };
 
   const handleMouseOver = (event) => {
-    // console.log("hovering");
     if (
+      /**
+       * If hovering WidgetSelector border
+       */
       event.target === widgetSelectorBorderTopRef.current ||
       event.target === widgetSelectorBorderBottomRef.current ||
       event.target === widgetSelectorBorderLeftRef.current ||
@@ -96,7 +95,11 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
     ) {
       console.log("hovering border");
       setIsHoveringClickable(true);
+      event.stopPropagation();
     } else if (widgetSelectorContainerRef.current.contains(event.target)) {
+      /**
+       * If hovering inside WidgetSelector
+       */
       setIsHovering(true);
       console.log("hi");
       event.stopPropagation();
@@ -109,7 +112,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
     // console.log("stopped hovering");
   };
 
-  document.body.addEventListener("click", handleOuterClick);
+  document.body.addEventListener("mousedown", handleOuterClick);
 
   return (
     <>
@@ -127,18 +130,18 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
 
         {resizeable && (
           // Not sure why this CSSTransition isn't triggering... "className" is being referenced in WidgetResizeHandle.tsx as a classNames item
-          <CSSTransition
-            timeout={AnimationDuration.Short}
-            classNames="widget-selector__resize-handles-"
-            in={isHovering || isSelected}
-          >
-            <div className="widget-selector__resize-handles-wrapper">
-              <WidgetResizeHandle position={HandlePosition.Left} className="widget-selector__resize-handles" />
-              <WidgetResizeHandle position={HandlePosition.Right} className="widget-selector__resize-handles" />
-            </div>
-          </CSSTransition>
+          <>
+            <WidgetResizeHandle
+              position={HandlePosition.Left}
+              trigger={isHovering || isSelected || isHoveringClickable}
+            />
+            <WidgetResizeHandle
+              position={HandlePosition.Right}
+              trigger={isHovering || isSelected || isHoveringClickable}
+            />
+          </>
         )}
-        {!innerClickable && (
+        {!innerSelect && (
           <>
             <div
               className={classNames(["widget-selector__target", "widget-selector__target-top"])}
@@ -174,12 +177,13 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           className={classNames("widget-selector__container", [
             {
               "widget-selector__container--hover": isHovering,
-              "widget-selector__container--hover-clickable": isHoveringClickable || (innerClickable && isHovering),
+              "widget-selector__container--hover-clickable": isHoveringClickable || (innerSelect && isHovering),
               "widget-selector__container--selected": isSelected,
             },
             { "widget-selector__container-offset": offsetBorder },
           ])}
           ref={widgetSelectorContainerRef}
+          style={{ "--borderOffset": `${offsetValue}` } as CSSProperties}
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
           onClick={handleClick}

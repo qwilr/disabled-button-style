@@ -35,7 +35,8 @@
 }
 
 .two-cols-widget__col-divider {
-  padding: 0 @space-m;
+  padding: 0 @space-s;
+  margin: 0 @space-s;
   width: 0;
   display: flex;
   align-self: stretch;
@@ -60,7 +61,7 @@
     opacity: 0;
     transform: scale(0.8);
     transition-property: opacity, transform;
-    transition-duration: @duration-m;
+    transition-duration: @duration-s;
     transition-timing-function: @bezier-fastout-slowin;
 
     .button--tertiary {
@@ -74,8 +75,16 @@
   }
 
   &:hover {
+    cursor: col-resize;
+
     .col-divider__line {
-      background: rgba(@blue, 0.2);
+      // width: 4px;
+      background: rgba(@blue, 0.25);
+
+      &-resizing {
+        // width: 4px;
+        background: rgba(@blue, 0.5);
+      }
     }
 
     .col-divider__swapper-container {
@@ -83,4 +92,9 @@
       transform: scale(1);
     }
   }
+}
+
+.accordion-list {
+  display: grid;
+  gap: @space-s;
 }

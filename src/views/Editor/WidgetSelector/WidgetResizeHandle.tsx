@@ -1,5 +1,7 @@
 import classNames from "classnames";
-import React, { FC, useEffect, useState } from "react";
+import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
+import React, { FC } from "react";
+import { CSSTransition } from "react-transition-group";
 
 export enum HandlePosition {
   Top = "top",
@@ -14,12 +16,20 @@ export enum HandlePosition {
 
 interface WidgetResizeHandleProps {
   position: HandlePosition;
-  className?: string;
+  trigger: boolean;
+  offset?: boolean;
 }
 
-const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({ position, className }) => {
+const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({ position, trigger, offset }) => {
   return (
-    <div className={classNames(["widget-resize-handle", `widget-resize-handle--${position}`, `${className}`])}></div>
+    <CSSTransition timeout={AnimationDuration.Short} classNames="widget-selector__resize-handle-" in={trigger}>
+      <div
+        className={classNames("widget-resize-handle", [
+          { "widget-resize-handle--offset": offset },
+          `widget-resize-handle--${position}`,
+        ])}
+      ></div>
+    </CSSTransition>
   );
 };
 

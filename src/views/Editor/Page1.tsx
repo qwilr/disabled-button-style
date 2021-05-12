@@ -41,7 +41,7 @@ const Page: FC = () => {
         />
       </Block> */}
       <Block backgroundColor={blockColor}>
-        <TextInput label="Block color" onChange={(value) => setBlockColor(value)} />
+        {/* <TextInput label="Block color" onChange={(value) => setBlockColor(value)} /> */}
         <TextEditor
           value={[
             {
