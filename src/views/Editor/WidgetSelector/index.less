@@ -78,7 +78,7 @@
     border: 2px solid rgba(@grey, 0);
     border-radius: 8px;
     transition-property: border;
-    transition-duration: 50ms;
+    transition-duration: 100ms;
     transition-timing-function: @bezier-standard;
   }
 
@@ -95,18 +95,4 @@
   &--selected::before {
     border: @borderWidth solid rgba(@blue, 0.5);
   }
-}
-
-.widget-selector__resize-handles {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: transform, opacity;
-  transition-duration: @duration-s;
-  transition-timing-function: @bezier-fastout-slowin;
-}
-
-.widget-selector__resize-handles--enter-active,
-.widget-selector__resize-handles--enter-done {
-  opacity: 1;
-  transform: scale(1);
 }

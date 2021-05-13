@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import classNames from "classnames";
 import ImageWidget from "../ImageWidget";
 import TextEditor, { TextEditorBlock } from "views/TextEditor";
-import WidgetSelector from "../WidgetSelector";
+import WidgetSelector, { ResizeHandleType } from "../WidgetSelector";
 import { ButtonSize, ButtonTheme, IconButton, Tooltip, TooltipPosition } from "kaleidoscope/src";
 import { Swap } from "kaleidoscope/src/global/icons";
 import AccordionWidget from "views/Editor/AccordionWidget";
@@ -17,7 +17,7 @@ const TwoColsWidget = () => {
   };
 
   return (
-    <WidgetSelector offsetBorder={true} innerSelect={false} resizeable={true}>
+    <WidgetSelector offsetBorder={true} innerSelect={false} resizeHandles={ResizeHandleType.LeftRight}>
       <div
         className={"two-cols-widget"}
         ref={twoColsWidgetRef}

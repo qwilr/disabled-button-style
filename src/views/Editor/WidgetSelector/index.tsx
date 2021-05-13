@@ -2,7 +2,7 @@ import classNames from "classnames";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Delete } from "kaleidoscope/src/global/icons";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
-import React, { CSSProperties, FC, useRef, useState } from "react";
+import React, { CSSProperties, FC, useEffect, useRef, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import WidgetResizeHandle, { HandlePosition } from "./WidgetResizeHandle";
 
@@ -13,11 +13,17 @@ export enum WidgetType {
   Accordion = "accordion",
 }
 
+export enum ResizeHandleType {
+  Corners = "corners",
+  LeftRight = "left-right",
+  TopBottom = "top-bottom",
+}
+
 interface WidgetSelectorProps {
   /**
-   * If true, then show resizing handles
+   * Choose the type of resizing handle(s)
    */
-  resizeable?: boolean;
+  resizeHandles?: ResizeHandleType;
   /**
    * If true, then set the whole inner area to be clickable
    */
@@ -41,7 +47,7 @@ interface WidgetSelectorProps {
 
 const WidgetSelector: FC<WidgetSelectorProps> = ({
   children,
-  resizeable,
+  resizeHandles,
   innerSelect,
   offsetBorder,
   offsetValue = "-16px",
@@ -58,13 +64,22 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const widgetSelectorBorderRightRef = useRef(null);
   const widgetSelectorContainerRef = useRef(null);
 
-  const handleOuterClick = (event) => {
-    if (!widgetSelectorRef.current.contains(event.target)) {
-      setIsSelected(false);
-      ``;
-      // console.log("outside");
-    }
-  };
+  useEffect(() => {
+    const handleOuterClick = (event) => {
+      if (!widgetSelectorRef.current.contains(event.target) || event.key === "Esc") {
+        setIsSelected(false);
+        // console.log("outside");
+      }
+    };
+
+    document.body.addEventListener("mousedown", handleOuterClick);
+    document.addEventListener("keydown", handleOuterClick);
+
+    return () => {
+      document.body.removeEventListener("mousedown", handleOuterClick);
+      document.removeEventListener("keydown", handleOuterClick);
+    };
+  }, []);
 
   const handleClick = (event) => {
     if (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) {
@@ -112,8 +127,6 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
     // console.log("stopped hovering");
   };
 
-  document.body.addEventListener("mousedown", handleOuterClick);
-
   return (
     <>
       <Toolbar visible={isSelected} element={widgetSelectorRef.current}>
@@ -128,19 +141,43 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
         onClick={handleClick}
       /> */}
 
-        {resizeable && (
-          // Not sure why this CSSTransition isn't triggering... "className" is being referenced in WidgetResizeHandle.tsx as a classNames item
+        {resizeHandles === "corners" && (
           <>
             <WidgetResizeHandle
-              position={HandlePosition.Left}
-              trigger={isHovering || isSelected || isHoveringClickable}
+              position={HandlePosition.TopLeft}
+              trigger={isSelected}
+              style={{ cursor: "nwse-resize" }}
             />
             <WidgetResizeHandle
-              position={HandlePosition.Right}
-              trigger={isHovering || isSelected || isHoveringClickable}
+              position={HandlePosition.BottomLeft}
+              trigger={isSelected}
+              style={{ cursor: "nesw-resize" }}
+            />
+            <WidgetResizeHandle
+              position={HandlePosition.TopRight}
+              trigger={isSelected}
+              style={{ cursor: "nesw-resize" }}
+            />
+            <WidgetResizeHandle
+              position={HandlePosition.BottomRight}
+              trigger={isSelected}
+              style={{ cursor: "nwse-resize" }}
             />
           </>
         )}
+        {resizeHandles === "left-right" && (
+          <>
+            <WidgetResizeHandle position={HandlePosition.Left} trigger={isSelected} style={{ cursor: "ew-resize" }} />
+            <WidgetResizeHandle position={HandlePosition.Right} trigger={isSelected} style={{ cursor: "ew-resize" }} />
+          </>
+        )}
+        {resizeHandles === "top-bottom" && (
+          <>
+            <WidgetResizeHandle position={HandlePosition.Top} trigger={isSelected} style={{ cursor: "ns-resize" }} />
+            <WidgetResizeHandle position={HandlePosition.Bottom} trigger={isSelected} style={{ cursor: "ns-resize" }} />
+          </>
+        )}
+
         {!innerSelect && (
           <>
             <div
