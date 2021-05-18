@@ -14,22 +14,31 @@ export enum HandlePosition {
   BottomRight = "bottom-right",
 }
 
-interface WidgetResizeHandleProps {
-  position: HandlePosition;
-  trigger: boolean;
-  offset?: boolean;
+export interface WidgetResizeHandleProps {
+  position?: HandlePosition;
+  trigger?: boolean;
+  offsetValue?: number;
   style?: CSSProperties;
 }
 
-const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({ position, trigger, offset, style }) => {
+const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({ position, trigger, offsetValue = 0, style }) => {
   return (
-    <CSSTransition timeout={AnimationDuration.Short} classNames="widget-selector__resize-handle-" in={trigger}>
+    <CSSTransition
+      timeout={AnimationDuration.Short}
+      classNames="widget-selector__resize-handle-"
+      in={trigger}
+      mountOnEnter
+      unmountOnExit
+    >
       <div
         className={classNames("widget-resize-handle", [
-          { "widget-resize-handle--offset": offset },
+          { "widget-resize-handle--offset": offsetValue },
           `widget-resize-handle--${position}`,
         ])}
         style={style}
+        onMouseOver={(event) => {
+          event.stopPropagation();
+        }}
       ></div>
     </CSSTransition>
   );

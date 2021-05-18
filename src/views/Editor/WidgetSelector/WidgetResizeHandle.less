@@ -15,18 +15,14 @@
   transition-duration: @duration-s;
   transition-timing-function: @bezier-fastout-slowin;
 
-  &--offset {
-    @offset: 16px;
+  &--left {
+    left: calc(0px - (@handleSize / 2) + 2px - var(--offsetValue));
+    top: calc(50% - (@handleSize / 2));
+  }
 
-    &--left {
-      left: calc(0px - (@handleSize / 2) - 2px - @offset);
-      top: calc(50% - (@handleSize / 2));
-    }
-
-    &--right {
-      right: calc(0px - (@handleSize / 2) - 2px - @offset);
-      top: calc(50% - (@handleSize / 2));
-    }
+  &--right {
+    right: calc(0px - (@handleSize / 2) + 2px - var(--offsetValue));
+    top: calc(50% - (@handleSize / 2));
   }
 
   &--top {
@@ -37,16 +33,6 @@
   &--bottom {
     bottom: calc(0px - (@handleSize / 2) - 2px);
     left: calc(50% - (@handleSize / 2));
-  }
-
-  &--left {
-    left: calc(0px - (@handleSize / 2) - 2px);
-    top: calc(50% - (@handleSize / 2));
-  }
-
-  &--right {
-    right: calc(0px - (@handleSize / 2) - 2px);
-    top: calc(50% - (@handleSize / 2));
   }
 
   &--top-left {

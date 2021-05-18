@@ -5,7 +5,7 @@ import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 import React, { CSSProperties, FC, useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { ConfigContext } from "views/App/AppConfig";
-import WidgetResizeHandle, { HandlePosition } from "./WidgetResizeHandle";
+import WidgetResizeHandle, { HandlePosition, WidgetResizeHandleProps } from "./WidgetResizeHandle";
 
 export enum WidgetType {
   Image = "image",
@@ -25,6 +25,7 @@ interface WidgetSelectorProps {
    * Choose the type of resizing handle(s)
    */
   resizeHandles?: ResizeHandleType;
+  resizeHandleProps?: WidgetResizeHandleProps;
   /**
    * If true, then set the whole inner area to be clickable
    */
@@ -51,7 +52,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   resizeHandles,
   innerSelect,
   offsetBorder,
-  offsetValue,
+  offsetValue = 0,
 }) => {
   const config = useContext(ConfigContext);
 
@@ -72,18 +73,25 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
    */
   useEffect(() => {
     const handleOuterClick = (event) => {
-      if (!widgetSelectorRef.current.contains(event.target) || event.key === "Esc") {
+      if (!widgetSelectorRef.current.contains(event.target)) {
         setIsSelected(false);
-        // console.log("outside");
+      }
+    };
+
+    const handleEscKey = (event) => {
+      if (event.key === "Esc") {
+        setIsSelected(false);
       }
     };
 
     document.body.addEventListener("mousedown", handleOuterClick);
-    document.addEventListener("keydown", handleOuterClick);
+    document.body.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleEscKey);
 
     return () => {
       document.body.removeEventListener("mousedown", handleOuterClick);
-      document.removeEventListener("keydown", handleOuterClick);
+      document.body.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleEscKey);
     };
   }, []);
 
@@ -97,7 +105,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       event.target === widgetSelectorBorderRightRef.current
     ) {
       setIsSelected(true);
-    } else if (!innerSelect) {
+    } else if (widgetSelectorContainerRef.current.contains(event.target) && !innerSelect) {
       setIsHovering(false);
       setIsSelected(false);
       event.stopPropagation();
@@ -114,7 +122,6 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       event.target === widgetSelectorBorderLeftRef.current ||
       event.target === widgetSelectorBorderRightRef.current
     ) {
-      console.log("hovering border", offsetValue);
       setIsHoveringClickable(true);
       event.stopPropagation();
     } else if (widgetSelectorContainerRef.current.contains(event.target)) {
@@ -123,6 +130,10 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
        */
       setIsHovering(true);
       console.log("hi");
+      event.stopPropagation();
+    } else {
+      // setIsHovering(true);
+      console.log("hover");
       event.stopPropagation();
     }
   };
@@ -173,8 +184,16 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
         )}
         {resizeHandles === "left-right" && (
           <>
-            <WidgetResizeHandle position={HandlePosition.Left} trigger={isSelected} style={{ cursor: "ew-resize" }} />
-            <WidgetResizeHandle position={HandlePosition.Right} trigger={isSelected} style={{ cursor: "ew-resize" }} />
+            <WidgetResizeHandle
+              position={HandlePosition.Left}
+              trigger={isSelected}
+              style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
+            />
+            <WidgetResizeHandle
+              position={HandlePosition.Right}
+              trigger={isSelected}
+              style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
+            />
           </>
         )}
         {resizeHandles === "top-bottom" && (
@@ -190,7 +209,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               className={classNames(["widget-selector__target", "widget-selector__target-top"])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
-              onClick={handleClick}
+              // onClick={handleClick}
               style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderTopRef}
             />
@@ -198,7 +217,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               className={classNames(["widget-selector__target", "widget-selector__target-bottom"])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
-              onClick={handleClick}
+              // onClick={handleClick}
               style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderBottomRef}
             />
@@ -206,7 +225,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               className={classNames(["widget-selector__target", "widget-selector__target-right"])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
-              onClick={handleClick}
+              // onClick={handleClick}
               style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderRightRef}
             />
@@ -214,7 +233,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               className={classNames(["widget-selector__target", "widget-selector__target-left"])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
-              onClick={handleClick}
+              // onClick={handleClick}
               style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderLeftRef}
             />
@@ -235,7 +254,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           }
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
-          onClick={handleClick}
+          // onClick={handleClick}
         >
           {children}
         </div>
