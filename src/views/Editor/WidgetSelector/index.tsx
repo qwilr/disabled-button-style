@@ -2,8 +2,9 @@ import classNames from "classnames";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Delete } from "kaleidoscope/src/global/icons";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
-import React, { CSSProperties, FC, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, FC, useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { ConfigContext } from "views/App/AppConfig";
 import WidgetResizeHandle, { HandlePosition } from "./WidgetResizeHandle";
 
 export enum WidgetType {
@@ -32,7 +33,7 @@ interface WidgetSelectorProps {
    * If true, then offset the selection border from the edge of the child
    */
   offsetBorder?: boolean;
-  offsetValue?: string;
+  offsetValue?: number;
   /**
    * Create a unique identifier for the component instance
    */
@@ -50,8 +51,10 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   resizeHandles,
   innerSelect,
   offsetBorder,
-  offsetValue = "-16px",
-}: WidgetSelectorProps) => {
+  offsetValue,
+}) => {
+  const config = useContext(ConfigContext);
+
   const [isHovering, setIsHovering] = useState(false);
   const [isHoveringClickable, setIsHoveringClickable] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
@@ -64,6 +67,9 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const widgetSelectorBorderRightRef = useRef(null);
   const widgetSelectorContainerRef = useRef(null);
 
+  /**
+   * This is essentially using componentDidMount and componentWillUnmount to add and remove eventListeners
+   */
   useEffect(() => {
     const handleOuterClick = (event) => {
       if (!widgetSelectorRef.current.contains(event.target) || event.key === "Esc") {
@@ -108,7 +114,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       event.target === widgetSelectorBorderLeftRef.current ||
       event.target === widgetSelectorBorderRightRef.current
     ) {
-      console.log("hovering border");
+      console.log("hovering border", offsetValue);
       setIsHoveringClickable(true);
       event.stopPropagation();
     } else if (widgetSelectorContainerRef.current.contains(event.target)) {
@@ -185,6 +191,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               onClick={handleClick}
+              style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderTopRef}
             />
             <div
@@ -192,6 +199,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               onClick={handleClick}
+              style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderBottomRef}
             />
             <div
@@ -199,6 +207,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               onClick={handleClick}
+              style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderRightRef}
             />
             <div
@@ -206,6 +215,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               onClick={handleClick}
+              style={{ "--borderOffset": `-${offsetValue}px` } as CSSProperties}
               ref={widgetSelectorBorderLeftRef}
             />
           </>
@@ -220,7 +230,9 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
             { "widget-selector__container-offset": offsetBorder },
           ])}
           ref={widgetSelectorContainerRef}
-          style={{ "--borderOffset": `${offsetValue}` } as CSSProperties}
+          style={
+            { cursor: innerSelect ? "pointer" : "inherit", "--borderOffset": `-${offsetValue}px` } as CSSProperties
+          }
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
           onClick={handleClick}

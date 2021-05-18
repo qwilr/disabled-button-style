@@ -43,7 +43,7 @@ const AccordionWidget: FC<AccordionWidgetProps> = ({ children, headerText, bodyT
   };
 
   return (
-    <WidgetSelector innerSelect={false} offsetBorder={true} offsetValue="-8px">
+    <WidgetSelector innerSelect={false} offsetBorder={true} offsetValue={8}>
       <div className="accordion-card-widget" tabIndex={0} ref={accordionRef}>
         {/* Accordion header */}
         <div className="accordion-card-widget__header">

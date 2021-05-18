@@ -6,10 +6,10 @@ export const appConfigOptions = {
     type: ConfigType.Toggle,
     value: true,
   },
-  // exampleToggle: {
-  //   type: ConfigType.Toggle,
-  //   value: false,
-  // },
+  showTargetAreas: {
+    type: ConfigType.Toggle,
+    value: false,
+  },
   // exampleSlider: {
   //   type: ConfigType.Slider,
   //   value: 5,

@@ -10,47 +10,39 @@
 
 .widget-selector__target {
   position: absolute;
-  //   background-color: rgba(@grey, 0.1);
+  cursor: pointer;
+  // background-color: rgba(@grey, 0.1);
 
   &-top {
-    width: calc(100% - 2 * @borderOffset);
-    height: -@borderOffset;
-    top: @borderOffset;
-    // left: @borderOffset;
-    // height: calc(-@borderOffset - @borderOffset + "px");
-    // top: calc(@borderOffset * 1.5);
-    // left: calc(@borderOffset * 1.5);
-    // background-color: black;
+    width: calc(100% - 2 * var(--borderOffset));
+    height: calc(0px - var(--borderOffset));
+    top: var(--borderOffset);
+    left: var(--borderOffset);
   }
 
   &-bottom {
-    width: calc(100% - 2 * @borderOffset);
-    height: -@borderOffset;
-    bottom: @borderOffset;
-    left: @borderOffset;
+    width: calc(100% - 2 * var(--borderOffset));
+    height: calc(0px - var(--borderOffset));
+    bottom: var(--borderOffset);
+    left: var(--borderOffset);
   }
 
   &-right {
     height: 100%;
-    width: -@borderOffset;
-    right: @borderOffset;
-    // width: calc(-@borderOffset * 1.5);
-    // right: calc(@borderOffset * 1.5);
+    width: calc(0px - var(--borderOffset));
+    right: var(--borderOffset);
   }
 
   &-left {
     height: 100%;
-    width: -@borderOffset;
-    left: @borderOffset;
-    // width: calc(- (@borderOffset * 1.5));
-    // left: calc(@borderOffset * 1.5);
+    width: calc(0px - var(--borderOffset));
+    left: var(--borderOffset);
   }
 }
 
 .widget-selector__container {
   width: fit-content;
   height: fit-content;
-  //   box-shadow: 0 0 0 3px rgba(@blue, 0);
 
   & {
     &::before {
