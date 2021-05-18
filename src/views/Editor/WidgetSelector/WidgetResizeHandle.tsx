@@ -19,9 +19,18 @@ export interface WidgetResizeHandleProps {
   trigger?: boolean;
   offsetValue?: number;
   style?: CSSProperties;
+  onMouseOver?: (event: any) => void;
+  onMouseOut?: (event: any) => void;
 }
 
-const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({ position, trigger, offsetValue = 0, style }) => {
+const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({
+  position,
+  trigger,
+  offsetValue = 0,
+  style,
+  onMouseOver,
+  onMouseOut,
+}) => {
   return (
     <CSSTransition
       timeout={AnimationDuration.Short}
@@ -36,9 +45,8 @@ const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({ position, trigger, of
           `widget-resize-handle--${position}`,
         ])}
         style={style}
-        onMouseOver={(event) => {
-          event.stopPropagation();
-        }}
+        onMouseOver={onMouseOver}
+        onMouseOut={onMouseOut}
       ></div>
     </CSSTransition>
   );

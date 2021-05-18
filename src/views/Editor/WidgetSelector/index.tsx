@@ -20,7 +20,7 @@ export enum ResizeHandleType {
   TopBottom = "top-bottom",
 }
 
-interface WidgetSelectorProps {
+export interface WidgetSelectorProps {
   /**
    * Choose the type of resizing handle(s)
    */
@@ -113,6 +113,8 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   };
 
   const handleMouseOver = (event) => {
+    event.stopPropagation();
+
     if (
       /**
        * If hovering WidgetSelector border
@@ -123,25 +125,25 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       event.target === widgetSelectorBorderRightRef.current
     ) {
       setIsHoveringClickable(true);
-      event.stopPropagation();
     } else if (widgetSelectorContainerRef.current.contains(event.target)) {
       /**
        * If hovering inside WidgetSelector
        */
       setIsHovering(true);
-      console.log("hi");
-      event.stopPropagation();
-    } else {
-      // setIsHovering(true);
-      console.log("hover");
-      event.stopPropagation();
+    }
+  };
+
+  const handleResizeHandleHover = (event) => {
+    event.stopPropagation();
+
+    if (config.showControlsOnHover) {
+      setIsHoveringClickable(true);
     }
   };
 
   const handleMouseOut = () => {
     setIsHovering(false);
     setIsHoveringClickable(false);
-    // console.log("stopped hovering");
   };
 
   return (
@@ -157,28 +159,35 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
         onMouseOut={handleMouseOut}
         onClick={handleClick}
       /> */}
-
         {resizeHandles === "corners" && (
           <>
             <WidgetResizeHandle
               position={HandlePosition.TopLeft}
-              trigger={isSelected}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nwse-resize" }}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.BottomLeft}
-              trigger={isSelected}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nesw-resize" }}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.TopRight}
-              trigger={isSelected}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nesw-resize" }}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.BottomRight}
-              trigger={isSelected}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nwse-resize" }}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
             />
           </>
         )}
@@ -186,20 +195,36 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.Left}
-              trigger={isSelected}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.Right}
-              trigger={isSelected}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
             />
           </>
         )}
         {resizeHandles === "top-bottom" && (
           <>
-            <WidgetResizeHandle position={HandlePosition.Top} trigger={isSelected} style={{ cursor: "ns-resize" }} />
-            <WidgetResizeHandle position={HandlePosition.Bottom} trigger={isSelected} style={{ cursor: "ns-resize" }} />
+            <WidgetResizeHandle
+              position={HandlePosition.Top}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
+              style={{ cursor: "ns-resize" }}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
+            />
+            <WidgetResizeHandle
+              position={HandlePosition.Bottom}
+              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
+              style={{ cursor: "ns-resize" }}
+              onMouseOver={handleResizeHandleHover}
+              onMouseOut={handleMouseOut}
+            />
           </>
         )}
 

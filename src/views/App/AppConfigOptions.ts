@@ -10,6 +10,14 @@ export const appConfigOptions = {
     type: ConfigType.Toggle,
     value: false,
   },
+  showControlsOnHover: {
+    type: ConfigType.Toggle,
+    value: true,
+  },
+  showColumnDividerOnHover: {
+    type: ConfigType.Toggle,
+    value: false,
+  },
   // exampleSlider: {
   //   type: ConfigType.Slider,
   //   value: 5,

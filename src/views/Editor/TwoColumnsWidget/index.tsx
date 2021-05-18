@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useContext, useRef, useState } from "react";
 import classNames from "classnames";
 import ImageWidget from "../ImageWidget";
 import TextEditor, { TextEditorBlock } from "views/TextEditor";
@@ -6,36 +6,91 @@ import WidgetSelector, { ResizeHandleType } from "../WidgetSelector";
 import { ButtonSize, ButtonTheme, IconButton, Tooltip, TooltipPosition } from "kaleidoscope/src";
 import { Swap } from "kaleidoscope/src/global/icons";
 import AccordionWidget from "views/Editor/AccordionWidget";
+import { ConfigContext } from "views/App/AppConfig";
 
 const TwoColsWidget = () => {
-  const [isHovering, setIsHovering] = useState(false);
+  const config = useContext(ConfigContext);
+
+  const [isHoveringGutter, setIsHoveringGutter] = useState(false);
+  const [isLineHovering, setIsLineHovering] = useState(false);
+  const [isLineVisible, setIsLineVisible] = useState(false);
   const [isResizingColumns, setIsResizingColumns] = useState(false);
 
   const twoColsWidgetRef = useRef(null);
+  const swapButtonRef = useRef(null);
 
   const handleStopPropagation = (event) => {
     event.stopPropagation();
+    console.log("stop");
+  };
+
+  const handleLineHovering = (event) => {
+    event.stopPropagation();
+
+    if (swapButtonRef.current.contains(event.target)) {
+      setIsLineHovering(false);
+    } else if (!swapButtonRef.current.contains(event.target)) {
+      setIsLineHovering(true);
+    }
+  };
+
+  const handleMouseLeaveGutter = () => {
+    setIsHoveringGutter(false);
+    setIsLineHovering(false);
+    setIsLineVisible(false);
+  };
+
+  const handleMouseDownGutter = (event) => {
+    event.stopPropagation();
+
+    if (!swapButtonRef.current.contains(event.target)) {
+      setIsResizingColumns(true);
+    } else if (swapButtonRef.current.contains(event.target)) {
+      setIsResizingColumns(false);
+    }
+  };
+
+  const handleHoverGutter = (event) => {
+    setIsHoveringGutter(true);
+    event.stopPropagation();
+
+    if (!swapButtonRef.current.contains(event.target)) {
+      handleLineHovering;
+    } else if (swapButtonRef.current.contains(event.target)) {
+      setIsLineHovering(false);
+      setIsLineVisible(true);
+    }
   };
 
   return (
-    <WidgetSelector offsetBorder={true} offsetValue={16} innerSelect={false} resizeHandles={ResizeHandleType.LeftRight}>
+    <WidgetSelector
+      offsetBorder={true}
+      offsetValue={16}
+      innerSelect={false}
+      resizeHandles={ResizeHandleType.LeftRight}
+      resizeHandleProps={{ offsetValue: 16 }}
+    >
       <>
         <div
           className={"two-cols-widget"}
           ref={twoColsWidgetRef}
-          // onMouseOver={handleWidgetHover}
-          // onMouseLeave={handleWidgetExit}
+          onMouseOver={() => {
+            if (config.showColumnDividerOnHover) {
+              setIsLineVisible(true);
+            }
+          }}
+          onMouseOut={() => {
+            if (config.showColumnDividerOnHover) {
+              setIsLineVisible(false);
+            }
+          }}
+          onClick={(event) => {
+            if (config.showColumnDividerOnHover && !swapButtonRef.current.contains(event.target)) {
+              setIsLineVisible(false);
+            }
+          }}
         >
           <div className="two-cols-widget__col-right">
-            {/* <div
-            className={classNames("two-cols-image", {
-              "two-cols-image--hover": imageHovering,
-              "two-cols-image--selected": imageSelected,
-            })}
-            // onMouseOver={handleWidgetHover}
-            // onMouseOut={handleWidgetExit}
-          >
-          </div> */}
             <ImageWidget
               imageURL="https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=648&q=80"
               width="100%"
@@ -44,25 +99,25 @@ const TwoColsWidget = () => {
           </div>
           <div
             className={classNames("two-cols-widget__col-divider", {
-              "two-cols-widget__col-divider--hover": isHovering,
+              "two-cols-widget__col-divider--hover": isHoveringGutter,
             })}
-            onMouseOver={() => {
-              handleStopPropagation;
-              setIsHovering(true);
-            }}
-            onMouseLeave={() => {
-              setIsHovering(false);
-            }}
-            onMouseDown={() => {
-              setIsResizingColumns(true);
-              console.log(isResizingColumns);
-            }}
+            onMouseOver={handleHoverGutter}
+            onMouseLeave={handleMouseLeaveGutter}
+            onPointerMove={handleLineHovering}
+            onMouseDown={handleMouseDownGutter}
             onMouseUp={() => {
               setIsResizingColumns(false);
             }}
           >
-            <div className={classNames("col-divider__line", { "col-divider__line-resizing": isResizingColumns })}></div>
-            <div className="col-divider__swapper-container" onClick={handleStopPropagation}>
+            <div
+              className="col-divider__swapper-container"
+              onMouseOver={() => {
+                setIsLineHovering(false);
+                setIsLineVisible(true);
+                console.log("line me");
+              }}
+              ref={swapButtonRef}
+            >
               <IconButton
                 icon={<Swap style={{ color: "white" }} />}
                 isRound
@@ -71,6 +126,13 @@ const TwoColsWidget = () => {
                 size={ButtonSize.Medium}
               />
             </div>
+            <div
+              className={classNames("col-divider__line", {
+                "col-divider__line--hover": isLineHovering,
+                "col-divider__line--resizing": isResizingColumns,
+                "col-divider__line--visible": isLineVisible,
+              })}
+            />
           </div>
           <div className="two-cols-widget__col-left">
             <TextEditor
