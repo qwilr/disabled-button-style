@@ -7,6 +7,8 @@ import { ButtonSize, ButtonTheme, IconButton, Tooltip, TooltipPosition } from "k
 import { Swap } from "kaleidoscope/src/global/icons";
 import AccordionWidget from "views/Editor/AccordionWidget";
 import { ConfigContext } from "views/App/AppConfig";
+import { CSSTransition } from "react-transition-group";
+import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 
 const TwoColsWidget = () => {
   const config = useContext(ConfigContext);
@@ -109,23 +111,31 @@ const TwoColsWidget = () => {
               setIsResizingColumns(false);
             }}
           >
-            <div
-              className="col-divider__swapper-container"
-              onMouseOver={() => {
-                setIsLineHovering(false);
-                setIsLineVisible(true);
-                console.log("line me");
-              }}
-              ref={swapButtonRef}
+            <CSSTransition
+              in={isHoveringGutter && !isResizingColumns}
+              mountOnEnter
+              unmountOnExit
+              timeout={AnimationDuration.Short}
+              classNames="col-divider__swapper-container-"
             >
-              <IconButton
-                icon={<Swap style={{ color: "white" }} />}
-                isRound
-                tooltip={{ content: "Swap columns", position: TooltipPosition.Top }}
-                //   theme={ButtonTheme.Dark}
-                size={ButtonSize.Medium}
-              />
-            </div>
+              <div
+                className={classNames("col-divider__swapper-container")}
+                onMouseOver={() => {
+                  setIsLineHovering(false);
+                  setIsLineVisible(true);
+                  console.log("line me");
+                }}
+                ref={swapButtonRef}
+              >
+                <IconButton
+                  icon={<Swap style={{ color: "white" }} />}
+                  isRound
+                  tooltip={{ content: "Swap columns", position: TooltipPosition.Top }}
+                  //   theme={ButtonTheme.Dark}
+                  size={ButtonSize.Medium}
+                />
+              </div>
+            </CSSTransition>
             <div
               className={classNames("col-divider__line", {
                 "col-divider__line--hover": isLineHovering,

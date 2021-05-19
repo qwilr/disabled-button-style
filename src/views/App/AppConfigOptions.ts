@@ -6,13 +6,13 @@ export const appConfigOptions = {
     type: ConfigType.Toggle,
     value: true,
   },
-  showTargetAreas: {
-    type: ConfigType.Toggle,
-    value: false,
-  },
+  // showTargetAreas: {
+  //   type: ConfigType.Toggle,
+  //   value: false,
+  // },
   showControlsOnHover: {
     type: ConfigType.Toggle,
-    value: true,
+    value: false,
   },
   showColumnDividerOnHover: {
     type: ConfigType.Toggle,
@@ -24,10 +24,10 @@ export const appConfigOptions = {
   //   min: 0,
   //   max: 10,
   // },
-  exampleText: {
-    type: ConfigType.TextInput,
-    value: "Example",
-  },
+  // exampleText: {
+  //   type: ConfigType.TextInput,
+  //   value: "Example",
+  // },
   // exampleNumber: {
   //   type: ConfigType.NumberInput,
   //   value: 1,
