@@ -5,8 +5,8 @@
   height: @handleSize;
   // margin: @space-s;
   border-radius: calc(@handleSize / 2);
-  background-color: @blue;
-  border: 3px solid @blue;
+  background-color: white;
+  border: 3px solid rgba(@blue, 0.5);
   // border: 2px solid rgba(@grey, 0.5);
   position: absolute;
   z-index: 3;
@@ -16,6 +16,11 @@
   transition: transform, opacity, background-color, border;
   transition-duration: @duration-s;
   transition-timing-function: @bezier-fastout-slowin;
+
+  &--hover-within {
+    background-color: white;
+    border: 3px solid rgba(@grey, 0.5);
+  }
 
   &--left {
     left: calc(0px - (@handleSize / 2) + 2px - var(--offsetValue));
@@ -58,6 +63,19 @@
   }
 }
 
+.widget-resize-handle--hovering {
+  background-color: white;
+  border: 3px solid rgba(@grey, 0.5);
+}
+
+.widget-resize-handle--hovering-clickable {
+  border: 3px solid rgba(@blue, 0.25);
+}
+
+.widget-resize-handle--selected {
+  border: 3px solid rgba(@blue, 0.5);
+}
+
 .widget-selector__resize-handle--enter-active,
 .widget-selector__resize-handle--enter-done {
   opacity: 1;
@@ -65,7 +83,7 @@
 
   &:hover {
     transform: scale(1.2);
-    // background-color: @blue;
-    // border: 0px solid rgba(@blue, 0.5);
+    background-color: @blue;
+    border: 3px solid rgba(@blue, 0.5);
   }
 }

@@ -2,7 +2,7 @@ import classNames from "classnames";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Delete } from "kaleidoscope/src/global/icons";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
-import React, { CSSProperties, FC, useContext, useEffect, useRef, useState } from "react";
+import React, { createContext, CSSProperties, FC, useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { ConfigContext } from "views/App/AppConfig";
 import WidgetResizeHandle, { HandlePosition, WidgetResizeHandleProps } from "./WidgetResizeHandle";
@@ -20,7 +20,7 @@ export enum ResizeHandleType {
   TopBottom = "top-bottom",
 }
 
-export interface WidgetSelectorProps {
+interface WidgetSelectorProps {
   /**
    * Choose the type of resizing handle(s)
    */
@@ -36,15 +36,21 @@ export interface WidgetSelectorProps {
   offsetBorder?: boolean;
   offsetValue?: number;
   /**
-   * Create a unique identifier for the component instance
-   */
-  id?: string;
-  /**
    * Widget selector must have a child to wrap around
    */
   children: any;
-  /** Toolbar options */
-  toolbarOptions?: any;
+}
+
+interface WidgetSelectorContextProps {
+  isHovering?: boolean;
+  isHoveringClickable?: boolean;
+  isSelected?: boolean;
+}
+
+const WidgetSelectorContext = createContext({} as WidgetSelectorContextProps);
+
+export function useWidgetSelectorContext() {
+  return useContext(WidgetSelectorContext);
 }
 
 const WidgetSelector: FC<WidgetSelectorProps> = ({
@@ -96,15 +102,18 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   }, []);
 
   const handleClick = (event) => {
-    if (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) {
-      setIsSelected(true);
-    } else if (
+    if (
+      (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) ||
       event.target === widgetSelectorBorderTopRef.current ||
       event.target === widgetSelectorBorderBottomRef.current ||
       event.target === widgetSelectorBorderLeftRef.current ||
       event.target === widgetSelectorBorderRightRef.current
     ) {
       setIsSelected(true);
+    } else if (widgetSelectorContainerRef.current.contains(event.target) && config.showToolbarOn === "Focus Within") {
+      setIsSelected(true);
+      event.stopPropagation();
+      console.log("focusss");
     } else if (widgetSelectorContainerRef.current.contains(event.target) && !innerSelect) {
       setIsHovering(false);
       setIsSelected(false);
@@ -125,6 +134,11 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       event.target === widgetSelectorBorderRightRef.current
     ) {
       setIsHoveringClickable(true);
+    } else if (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) {
+      /**
+       * If hovering inside WidgetSelector
+       */
+      setIsHoveringClickable(true);
     } else if (widgetSelectorContainerRef.current.contains(event.target)) {
       /**
        * If hovering inside WidgetSelector
@@ -136,7 +150,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const handleResizeHandleHover = (event) => {
     event.stopPropagation();
 
-    if (config.showControlsOnHover) {
+    if (config.showResizeHandlesOnHover) {
       setIsHoveringClickable(true);
     }
   };
@@ -144,10 +158,21 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const handleMouseOut = () => {
     setIsHovering(false);
     setIsHoveringClickable(false);
+    // console.log("outttt");
+  };
+
+  const handleKeyDown = (event) => {
+    if (widgetSelectorContainerRef.current.contains(event.target) && config.showToolbarOn === "Focus Within") {
+      setIsSelected(false);
+      setIsHovering(false);
+      console.log("key pressed");
+    }
   };
 
   return (
-    <>
+    <WidgetSelectorContext.Provider
+      value={{ isHovering: isHovering, isHoveringClickable: isHoveringClickable, isSelected: isSelected }}
+    >
       <Toolbar visible={isSelected} element={widgetSelectorRef.current}>
         {/* {props.toolbarOptions} */}
         <ToolbarButton icon={<Delete />} />
@@ -163,28 +188,24 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.TopLeft}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nwse-resize" }}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.BottomLeft}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nesw-resize" }}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.TopRight}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nesw-resize" }}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.BottomRight}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "nwse-resize" }}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
@@ -195,14 +216,12 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.Left}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.Right}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
@@ -213,14 +232,12 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.Top}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "ns-resize" }}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.Bottom}
-              trigger={config.showControlsOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
               style={{ cursor: "ns-resize" }}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
@@ -279,12 +296,14 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           }
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
+          onKeyDown={handleKeyDown}
           // onClick={handleClick}
         >
+          {/* {children} */}
           {children}
         </div>
       </div>
-    </>
+    </WidgetSelectorContext.Provider>
   );
 };
 

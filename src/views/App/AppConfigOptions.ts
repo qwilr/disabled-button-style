@@ -10,13 +10,22 @@ export const appConfigOptions = {
   //   type: ConfigType.Toggle,
   //   value: false,
   // },
-  showControlsOnHover: {
+  showResizeHandlesOnHover: {
     type: ConfigType.Toggle,
     value: false,
   },
   showColumnDividerOnHover: {
     type: ConfigType.Toggle,
     value: false,
+  },
+  // showToolbarOnFocus: {
+  //   type: ConfigType.Toggle,
+  //   value: false,
+  // },
+  showToolbarOn: {
+    type: ConfigType.SegmentedControl,
+    value: "Selection",
+    options: ["Selection", "Focus Within"],
   },
   // exampleSlider: {
   //   type: ConfigType.Slider,
@@ -31,10 +40,5 @@ export const appConfigOptions = {
   // exampleNumber: {
   //   type: ConfigType.NumberInput,
   //   value: 1,
-  // },
-  // exampleSegmentedControl: {
-  //   type: ConfigType.SegmentedControl,
-  //   value: "S",
-  //   options: ["S", "M", "L"],
   // },
 };

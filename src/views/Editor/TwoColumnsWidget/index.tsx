@@ -1,4 +1,4 @@
-import React, { FC, useContext, useRef, useState } from "react";
+import React, { createContext, FC, useContext, useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import ImageWidget from "../ImageWidget";
 import TextEditor, { TextEditorBlock } from "views/TextEditor";
@@ -9,9 +9,31 @@ import AccordionWidget from "views/Editor/AccordionWidget";
 import { ConfigContext } from "views/App/AppConfig";
 import { CSSTransition } from "react-transition-group";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
+import { useWidgetSelectorContext } from "../WidgetSelector";
+
+interface TwoColumnsContextProps {
+  isLineVisible?: boolean;
+}
 
 const TwoColsWidget = () => {
   const config = useContext(ConfigContext);
+
+  const { isSelected, isHovering, isHoveringClickable } = useWidgetSelectorContext();
+
+  //   useEffect(() => {
+  //     const handleDisplayDividerLine = () => {
+  //       if ((config.showColumnDividerOnHover && isHovering) || (!config.showColumnDividerOnHover && isSelected)) {
+  //         setIsLineVisible(true);
+  //       } else {
+  //       setIsLineVisible(false);
+  //     }
+  // return;
+
+  //   }, [isSelected, isHovering]);
+
+  useEffect(() => {
+    console.log(isSelected + "divider??");
+  }, [isSelected]);
 
   const [isHoveringGutter, setIsHoveringGutter] = useState(false);
   const [isLineHovering, setIsLineHovering] = useState(false);

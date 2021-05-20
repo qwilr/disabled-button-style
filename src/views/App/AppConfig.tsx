@@ -16,7 +16,7 @@ import { reducer, ConfigReducerAction, AppConfigReducerProps, ConfigType, Config
 import { useHistory } from "react-router-dom";
 import { appConfigOptions } from "./AppConfigOptions";
 
-export const ConfigContext = createContext({} as AppConfigReducerProps);
+export const ConfigContext = createContext({} as { [key: string]: any });
 
 // Deserialize params into initial config
 const initialParams = new URLSearchParams(window.location.search);
