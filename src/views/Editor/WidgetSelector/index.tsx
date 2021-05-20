@@ -84,6 +84,26 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       }
     };
 
+    const handleClick = (event) => {
+      if (
+        (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) ||
+        event.target === widgetSelectorBorderTopRef.current ||
+        event.target === widgetSelectorBorderBottomRef.current ||
+        event.target === widgetSelectorBorderLeftRef.current ||
+        event.target === widgetSelectorBorderRightRef.current
+      ) {
+        setIsSelected(true);
+      } else if (widgetSelectorContainerRef.current.contains(event.target) && config.showToolbarOn === "Focus Within") {
+        setIsSelected(true);
+        event.stopPropagation();
+        console.log("focusss");
+      } else if (widgetSelectorContainerRef.current.contains(event.target) && !innerSelect) {
+        setIsHovering(false);
+        setIsSelected(false);
+        event.stopPropagation();
+      }
+    };
+
     const handleEscKey = (event) => {
       if (event.key === "Esc") {
         setIsSelected(false);
@@ -99,27 +119,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       document.body.removeEventListener("mousedown", handleClick);
       document.removeEventListener("keydown", handleEscKey);
     };
-  }, []);
-
-  const handleClick = (event) => {
-    if (
-      (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) ||
-      event.target === widgetSelectorBorderTopRef.current ||
-      event.target === widgetSelectorBorderBottomRef.current ||
-      event.target === widgetSelectorBorderLeftRef.current ||
-      event.target === widgetSelectorBorderRightRef.current
-    ) {
-      setIsSelected(true);
-    } else if (widgetSelectorContainerRef.current.contains(event.target) && config.showToolbarOn === "Focus Within") {
-      setIsSelected(true);
-      event.stopPropagation();
-      console.log("focusss");
-    } else if (widgetSelectorContainerRef.current.contains(event.target) && !innerSelect) {
-      setIsHovering(false);
-      setIsSelected(false);
-      event.stopPropagation();
-    }
-  };
+  }, [config]);
 
   const handleMouseOver = (event) => {
     event.stopPropagation();
@@ -150,7 +150,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const handleResizeHandleHover = (event) => {
     event.stopPropagation();
 
-    if (config.showResizeHandlesOnHover) {
+    if (config.showResizeHandlesOn === "Hover") {
       setIsHoveringClickable(true);
     }
   };
@@ -158,7 +158,10 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const handleMouseOut = () => {
     setIsHovering(false);
     setIsHoveringClickable(false);
-    // console.log("outttt");
+    console.log(isSelected);
+    console.log(isHovering);
+    console.log(isHoveringClickable);
+    console.log("outttt");
   };
 
   const handleKeyDown = (event) => {
@@ -188,25 +191,25 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.TopLeft}
-              style={{ cursor: "nwse-resize" }}
+              style={{ cursor: "nwse-resize", "--backgroundColor": config.blockColor } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.BottomLeft}
-              style={{ cursor: "nesw-resize" }}
+              style={{ cursor: "nesw-resize", "--backgroundColor": config.blockColor } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.TopRight}
-              style={{ cursor: "nesw-resize" }}
+              style={{ cursor: "nesw-resize", "--backgroundColor": config.blockColor } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.BottomRight}
-              style={{ cursor: "nwse-resize" }}
+              style={{ cursor: "nwse-resize", "--backgroundColor": config.blockColor } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
@@ -216,13 +219,25 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.Left}
-              style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
+              style={
+                {
+                  cursor: "ew-resize",
+                  "--offsetValue": `${offsetValue}px`,
+                  "--backgroundColor": config.blockColor,
+                } as CSSProperties
+              }
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.Right}
-              style={{ cursor: "ew-resize", "--offsetValue": `${offsetValue}px` } as CSSProperties}
+              style={
+                {
+                  cursor: "ew-resize",
+                  "--offsetValue": `${offsetValue}px`,
+                  "--backgroundColor": config.blockColor,
+                } as CSSProperties
+              }
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
@@ -232,13 +247,13 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           <>
             <WidgetResizeHandle
               position={HandlePosition.Top}
-              style={{ cursor: "ns-resize" }}
+              style={{ cursor: "ns-resize", "--backgroundColor": config.blockColor } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
             <WidgetResizeHandle
               position={HandlePosition.Bottom}
-              style={{ cursor: "ns-resize" }}
+              style={{ cursor: "ns-resize", "--backgroundColor": config.blockColor } as CSSProperties}
               onMouseOver={handleResizeHandleHover}
               onMouseOut={handleMouseOut}
             />
@@ -248,7 +263,11 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
         {!innerSelect && (
           <>
             <div
-              className={classNames(["widget-selector__target", "widget-selector__target-top"])}
+              className={classNames([
+                "widget-selector__target",
+                "widget-selector__target-top",
+                { "widget-selector__target--target-area": config.showTargetAreas },
+              ])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               // onClick={handleClick}
@@ -256,7 +275,11 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               ref={widgetSelectorBorderTopRef}
             />
             <div
-              className={classNames(["widget-selector__target", "widget-selector__target-bottom"])}
+              className={classNames([
+                "widget-selector__target",
+                "widget-selector__target-bottom",
+                { "widget-selector__target--target-area": config.showTargetAreas },
+              ])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               // onClick={handleClick}
@@ -264,7 +287,11 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               ref={widgetSelectorBorderBottomRef}
             />
             <div
-              className={classNames(["widget-selector__target", "widget-selector__target-right"])}
+              className={classNames([
+                "widget-selector__target",
+                "widget-selector__target-right",
+                { "widget-selector__target--target-area": config.showTargetAreas },
+              ])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               // onClick={handleClick}
@@ -272,7 +299,11 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
               ref={widgetSelectorBorderRightRef}
             />
             <div
-              className={classNames(["widget-selector__target", "widget-selector__target-left"])}
+              className={classNames([
+                "widget-selector__target",
+                "widget-selector__target-left",
+                { "widget-selector__target--target-area": config.showTargetAreas },
+              ])}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
               // onClick={handleClick}
@@ -312,7 +343,7 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
 // interface WidgetSelectorTargetProps {
 //   position: string;
 //   onMouseOver?: () => void;
-//   onMouseOut?: () => void;
+//   onMouseLeave?: () => void;
 //   onClick?: () => void;
 // }
 

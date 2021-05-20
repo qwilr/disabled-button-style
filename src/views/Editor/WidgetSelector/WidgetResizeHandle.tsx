@@ -40,27 +40,17 @@ const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({
     <CSSTransition
       timeout={AnimationDuration.Short}
       classNames="widget-selector__resize-handle-"
-      in={config.showResizeHandlesOnHover ? isSelected || isHovering || isHoveringClickable : isSelected}
+      in={config.showResizeHandlesOn === "Hover" ? isSelected || isHovering || isHoveringClickable : isSelected}
       mountOnEnter
       unmountOnExit
     >
       <div
         className={classNames(
           "widget-resize-handle",
-          // {
-          //   // "widget-resize-handle--hovering": isHovering,
-          //   // "widget-resize-handle--hovering-clickable": isHoveringClickable,
-          //   "widget-resize-handle--selected": isSelected,
-          // },
-          [
-            {
-              "widget-resize-handle--hovering": isHovering && config.showResizeHandlesOnHover,
-              // "widget-resize-handle--hovering-clickable": isHoveringClickable,
-              // "widget-resize-handle--selected": isSelected,
-            },
-            { "widget-resize-handle--offset": offsetValue },
-            `widget-resize-handle--${position}`,
-          ],
+          {
+            "widget-resize-handle--target-area": config.showTargetAreas,
+          },
+          `widget-resize-handle--${position}`,
         )}
         style={style}
         onMouseOver={onMouseOver}
@@ -71,7 +61,14 @@ const WidgetResizeHandle: FC<WidgetResizeHandleProps> = ({
           console.log(isHoveringClickable);
           console.log("test");
         }}
-      ></div>
+      >
+        <div
+          className={classNames("widget-resize-handle__background", {
+            "widget-resize-handle__background--hovering":
+              isHovering && config.showResizeHandlesOn === "Hover" && !isSelected,
+          })}
+        ></div>
+      </div>
     </CSSTransition>
   );
 };

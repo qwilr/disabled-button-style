@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import Block from "./Block";
 import TextEditor, { TextEditorBlock } from "../TextEditor";
 import { EditorWrapper } from ".";
@@ -6,9 +6,10 @@ import { Descendant } from "slate";
 import ImageWidget from "./ImageWidget";
 import TwoColumnsWidget from "./TwoColumnsWidget";
 import { TextInput } from "kaleidoscope/src";
+import { ConfigContext } from "views/App/AppConfig";
 
 const Page: FC = () => {
-  const [blockColor, setBlockColor] = useState("#FFFFFF");
+  const config = useContext(ConfigContext);
 
   return (
     <EditorWrapper title="Project title">
@@ -40,7 +41,7 @@ const Page: FC = () => {
           ]}
         />
       </Block> */}
-      <Block backgroundColor={blockColor}>
+      <Block backgroundColor={config.blockColor}>
         {/* <TextInput label="Block color" onChange={(value) => setBlockColor(value)} /> */}
         <TextEditor
           value={[

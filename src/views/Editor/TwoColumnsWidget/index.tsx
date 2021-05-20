@@ -98,21 +98,21 @@ const TwoColsWidget = () => {
         <div
           className={"two-cols-widget"}
           ref={twoColsWidgetRef}
-          onMouseOver={() => {
-            if (config.showColumnDividerOnHover) {
-              setIsLineVisible(true);
-            }
-          }}
-          onMouseOut={() => {
-            if (config.showColumnDividerOnHover) {
-              setIsLineVisible(false);
-            }
-          }}
-          onClick={(event) => {
-            if (config.showColumnDividerOnHover && !swapButtonRef.current.contains(event.target)) {
-              setIsLineVisible(false);
-            }
-          }}
+          // onMouseOver={() => {
+          //   if (config.show2ColumnsDividerOnWidget === "Hover") {
+          //     setIsLineVisible(true);
+          //   }
+          // }}
+          // onMouseOut={() => {
+          //   if (config.show2ColumnsDividerOnWidget === "Hover") {
+          //     setIsLineVisible(false);
+          //   }
+          // }}
+          // onClick={(event) => {
+          //   if (config.show2ColumnsDividerOnWidget === "Hover" && !swapButtonRef.current.contains(event.target)) {
+          //     setIsLineVisible(false);
+          //   }
+          // }}
         >
           <div className="two-cols-widget__col-right">
             <ImageWidget
@@ -122,9 +122,13 @@ const TwoColsWidget = () => {
             ></ImageWidget>
           </div>
           <div
-            className={classNames("two-cols-widget__col-divider", {
-              "two-cols-widget__col-divider--hover": isHoveringGutter,
-            })}
+            className={classNames(
+              "two-cols-widget__col-divider",
+              {
+                "two-cols-widget__col-divider--hover": isHoveringGutter,
+              },
+              { "two-cols-widget__col-divider--target-area": config.showTargetAreas },
+            )}
             onMouseOver={handleHoverGutter}
             onMouseLeave={handleMouseLeaveGutter}
             onPointerMove={handleLineHovering}
@@ -141,7 +145,9 @@ const TwoColsWidget = () => {
               classNames="col-divider__swapper-container-"
             >
               <div
-                className={classNames("col-divider__swapper-container")}
+                className={classNames("col-divider__swapper-container", {
+                  "col-divider__swapper-container--target-area": config.showTargetAreas,
+                })}
                 onMouseOver={() => {
                   setIsLineHovering(false);
                   setIsLineVisible(true);

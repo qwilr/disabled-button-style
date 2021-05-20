@@ -11,9 +11,9 @@
 .widget-selector__target {
   position: absolute;
   cursor: pointer;
-  // background-color: rgba(@grey, 0.1);
 
   &-top {
+    // cursor: pointer;
     width: calc(100% - 2 * var(--borderOffset));
     height: calc(0px - var(--borderOffset));
     top: var(--borderOffset);
@@ -21,6 +21,7 @@
   }
 
   &-bottom {
+    // cursor: pointer;
     width: calc(100% - 2 * var(--borderOffset));
     height: calc(0px - var(--borderOffset));
     bottom: var(--borderOffset);
@@ -28,12 +29,14 @@
   }
 
   &-right {
+    // cursor: ew-resize;
     height: 100%;
     width: calc(0px - var(--borderOffset));
     right: var(--borderOffset);
   }
 
   &-left {
+    // cursor: ew-resize;
     height: 100%;
     width: calc(0px - var(--borderOffset));
     left: var(--borderOffset);
@@ -87,4 +90,8 @@
   &--selected::before {
     border: @borderWidth solid rgba(@blue, 0.5);
   }
+}
+
+.widget-selector__target--target-area {
+  background-color: rgba(@red, 0.1);
 }

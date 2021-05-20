@@ -6,22 +6,20 @@ export const appConfigOptions = {
     type: ConfigType.Toggle,
     value: true,
   },
-  // showTargetAreas: {
-  //   type: ConfigType.Toggle,
-  //   value: false,
-  // },
-  showResizeHandlesOnHover: {
+  showTargetAreas: {
     type: ConfigType.Toggle,
     value: false,
   },
-  showColumnDividerOnHover: {
-    type: ConfigType.Toggle,
-    value: false,
+  showResizeHandlesOn: {
+    type: ConfigType.SegmentedControl,
+    value: "Hover",
+    options: ["Hover", "Selection"],
   },
-  // showToolbarOnFocus: {
-  //   type: ConfigType.Toggle,
-  //   value: false,
-  // },
+  show2ColumnsDividerOnWidget: {
+    type: ConfigType.SegmentedControl,
+    value: "None",
+    options: ["None", "Hover", "Selection"],
+  },
   showToolbarOn: {
     type: ConfigType.SegmentedControl,
     value: "Selection",
@@ -33,10 +31,10 @@ export const appConfigOptions = {
   //   min: 0,
   //   max: 10,
   // },
-  // exampleText: {
-  //   type: ConfigType.TextInput,
-  //   value: "Example",
-  // },
+  blockColor: {
+    type: ConfigType.TextInput,
+    value: "#FFFFFF",
+  },
   // exampleNumber: {
   //   type: ConfigType.NumberInput,
   //   value: 1,
