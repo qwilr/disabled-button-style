@@ -7,6 +7,7 @@ import ImageWidget from "./ImageWidget";
 import TwoColumnsWidget from "./TwoColumnsWidget";
 import { TextInput } from "kaleidoscope/src";
 import { ConfigContext } from "views/App/AppConfig";
+import WidgetSelector from "./WidgetSelector";
 
 const Page: FC = () => {
   const config = useContext(ConfigContext);

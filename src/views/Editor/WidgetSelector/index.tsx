@@ -85,27 +85,45 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
     };
 
     const handleClick = (event) => {
-      if (
-        (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) ||
+      // event.stopPropagation();
+
+      if (widgetSelectorContainerRef.current.contains(event.target) && innerSelect) {
+        setIsSelected(true);
+      } else if (
         event.target === widgetSelectorBorderTopRef.current ||
         event.target === widgetSelectorBorderBottomRef.current ||
         event.target === widgetSelectorBorderLeftRef.current ||
         event.target === widgetSelectorBorderRightRef.current
       ) {
         setIsSelected(true);
-      } else if (widgetSelectorContainerRef.current.contains(event.target) && config.showToolbarOn === "Focus Within") {
-        setIsSelected(true);
-        event.stopPropagation();
-        console.log("focusss");
+        /**
+         * Attempt to set up "Show toolbar on focus within"
+         * Couldn't figure out how to get the parent toolbar to disappear when selecting a nested widget
+         * Thought stopPropagation() would solve this, but it's not working for some reason
+         */
+        // } else if (
+        //   widgetSelectorContainerRef.current.contains(event.target) &&
+        //   config.showToolbarOn === "Focus Within" &&
+        //   !innerSelect
+        // ) {
+        //   setTimeout(() => {
+        //     if (bananas === "no") {
+        //       setIsSelected(false);
+        //     } else if (bananas === "yes") {
+        //       setIsSelected(true);
+        //     }
+        //   }, 600);
+        //   // event.stopPropagation();
+        // console.log("click3");
       } else if (widgetSelectorContainerRef.current.contains(event.target) && !innerSelect) {
+        // event.stopPropagation();
         setIsHovering(false);
         setIsSelected(false);
-        event.stopPropagation();
       }
     };
 
     const handleEscKey = (event) => {
-      if (event.key === "Esc") {
+      if (event.key === "Escape") {
         setIsSelected(false);
       }
     };
@@ -119,7 +137,64 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
       document.body.removeEventListener("mousedown", handleClick);
       document.removeEventListener("keydown", handleEscKey);
     };
-  }, [config]);
+  }, []);
+
+  // const handleClick = (event) => {
+  //   // event.stopPropagation();
+  //   setIsSelected(true);
+  //   setChildClicked(true);
+  //   // console.log(childClicked);
+
+  //   // if (
+  //   //   innerSelect ||
+  //   //   event.target === widgetSelectorBorderTopRef.current ||
+  //   //   event.target === widgetSelectorBorderBottomRef.current ||
+  //   //   event.target === widgetSelectorBorderLeftRef.current ||
+  //   //   event.target === widgetSelectorBorderRightRef.current
+  //   // ) {
+  //   //   event.stopPropagation();
+  //   //   setIsSelected(true);
+  //   // } else if (config.showToolbarOn === "Focus Within") {
+  //   //   event.stopPropagation();
+  //   //   setIsSelected(true);
+  //   //   console.log("focusss");
+  //   // } else if (!innerSelect) {
+  //   //   setIsHovering(false);
+  //   //   setIsSelected(false);
+  //   //   // event.stopPropagation();
+  //   // }
+  // };
+
+  // const handleContentClick = (event) => {
+  //   event.stopPropagation();
+  //   setTimeout(() => {
+  //     setChildClicked(true), 200;
+  //   });
+
+  //   if (innerSelect) {
+  //     setIsSelected(true);
+  //     // setChildClicked(true);
+  //     console.log("click1", childClicked + "1");
+  //   } else if (config.showToolbarOn === "Focus Within" && !childClicked) {
+  //     // event.stopPropagation();
+  //     // setChildClicked(true);
+  //     setIsSelected(true);
+  //     console.log("click2", childClicked + "2");
+  //   } else if (!innerSelect && !childClicked) {
+  //     setIsSelected(true);
+  //     // setChildClicked(true);
+  //     console.log("click3", childClicked + "3");
+
+  //     // event.stopPropagation();
+  //   } else if (!innerSelect && childClicked) {
+  //     setIsHovering(true);
+  //     setIsSelected(false);
+  //     // setChildClicked(true);
+  //     console.log("click4", childClicked + "4");
+
+  //     // event.stopPropagation();
+  //   }
+  // };
 
   const handleMouseOver = (event) => {
     event.stopPropagation();
@@ -158,19 +233,23 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
   const handleMouseOut = () => {
     setIsHovering(false);
     setIsHoveringClickable(false);
-    console.log(isSelected);
-    console.log(isHovering);
-    console.log(isHoveringClickable);
-    console.log("outttt");
+    // console.log(isSelected);
+    // console.log(isHovering);
+    // console.log(isHoveringClickable);
+    // console.log("outttt");
   };
 
   const handleKeyDown = (event) => {
-    if (widgetSelectorContainerRef.current.contains(event.target) && config.showToolbarOn === "Focus Within") {
+    if (widgetSelectorContainerRef.current.contains(event.target)) {
       setIsSelected(false);
       setIsHovering(false);
       console.log("key pressed");
     }
   };
+
+  // useEffect(() => {
+  //   console.log(isSelected + "divider??");
+  // }, [isSelected]);
 
   return (
     <WidgetSelectorContext.Provider
@@ -327,8 +406,8 @@ const WidgetSelector: FC<WidgetSelectorProps> = ({
           }
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
+          // onClick={handleContentClick}
           onKeyDown={handleKeyDown}
-          // onClick={handleClick}
         >
           {/* {children} */}
           {children}

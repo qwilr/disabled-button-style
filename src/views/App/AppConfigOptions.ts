@@ -15,16 +15,16 @@ export const appConfigOptions = {
     value: "Hover",
     options: ["Hover", "Selection"],
   },
-  show2ColumnsDividerOnWidget: {
+  showColumnsDividerOnWidget: {
     type: ConfigType.SegmentedControl,
-    value: "None",
+    value: "Hover",
     options: ["None", "Hover", "Selection"],
   },
-  showToolbarOn: {
-    type: ConfigType.SegmentedControl,
-    value: "Selection",
-    options: ["Selection", "Focus Within"],
-  },
+  // showToolbarOn: {
+  //   type: ConfigType.SegmentedControl,
+  //   value: "Selection",
+  //   options: ["Selection", "Focus Within"],
+  // },
   // exampleSlider: {
   //   type: ConfigType.Slider,
   //   value: 5,
