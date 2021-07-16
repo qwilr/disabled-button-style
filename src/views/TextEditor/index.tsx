@@ -2,8 +2,32 @@ import React, { ElementType, FC, useCallback, useContext, useEffect, useMemo, us
 import { withReact, ReactEditor, Slate, Editable, useSlate } from "slate-react";
 import { BaseEditor, createEditor, Descendant, Transforms, Editor, Range, Element as SlateElement } from "slate";
 import Toolbar, { ToolbarButton } from "../../components/Toolbar";
-import { Bold, H1, H2, Italic, ListBullet, ListNumber } from "kaleidoscope/src/global/icons";
+import {
+  AlignCenter,
+  AlignLeft,
+  Bold,
+  H1,
+  H2,
+  Italic,
+  ListBullet,
+  ListNumber,
+  Styles,
+} from "kaleidoscope/src/global/icons";
+import { ReactComponent as FontSize } from "assets/font-size.svg";
 import { EditorContext } from "views/Editor";
+import {
+  ColorPalette,
+  OptionMenu,
+  OptionMenuItem,
+  Popover,
+  PopoverTheme,
+  SegmentedControl,
+  SegmentedControlTheme,
+  SliderInput,
+  SliderTheme,
+  Tooltip,
+} from "kaleidoscope/src";
+import { ConfigContext } from "views/App/AppConfig";
 
 export enum TextEditorBlock {
   H1 = "h1",
@@ -95,6 +119,7 @@ interface TextEditorProps {
   placeholder?: string;
   defaultElement?: ElementType;
   onChange?: (newValue: Descendant[]) => void;
+  disabledStyle?: boolean;
 }
 
 const TextEditor: FC<TextEditorProps> = ({
@@ -103,6 +128,7 @@ const TextEditor: FC<TextEditorProps> = ({
   defaultElement: DefaultElement = ParagraphElement,
   placeholder = "Type something...",
   onChange,
+  disabledStyle = false,
 }) => {
   const { preview } = useContext(EditorContext);
   const editor = useMemo(() => withReact(createEditor()), []);
@@ -152,7 +178,7 @@ const TextEditor: FC<TextEditorProps> = ({
 
   return (
     <Slate editor={editor} value={internalValue} onChange={handleChange}>
-      {allow.length > 0 && <TextEditorToolbar allow={allow} />}
+      {allow.length > 0 && <TextEditorToolbar allow={allow} disabledStyle={disabledStyle} />}
       <Editable
         className="proto-text-editor"
         readOnly={preview}
@@ -226,13 +252,15 @@ const isMarkActive = (editor: Editor, format: TextEditorMark) => {
 
 interface TextEditorToolbarProps {
   allow?: TextEditorElement[];
+  disabledStyle?: boolean;
 }
 
-const TextEditorToolbar: FC<TextEditorToolbarProps> = ({ allow }) => {
+const TextEditorToolbar: FC<TextEditorToolbarProps> = ({ allow, disabledStyle }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const editor = useSlate();
   const prevPosition = useRef(position);
   const { selection } = editor;
+  const config = useContext(ConfigContext);
 
   const isHidden =
     !selection ||
@@ -336,6 +364,219 @@ const TextEditorToolbar: FC<TextEditorToolbarProps> = ({ allow }) => {
             toggleBlock(editor, TextEditorBlock.OrderedList);
           }}
         />
+      )}
+      {/* {config.disabledStyleOption === "1" && (
+        <ToolbarButton
+          icon={<Styles />}
+          onMouseDown={(event) => {
+            event.preventDefault();
+          }}
+          tooltip={{ content: "Custom Styles not available inside accordion" }}
+          disabled
+          className="style-disabled"
+        />
+      )} */}
+      {!disabledStyle && (
+        <div
+          onMouseDown={(event) => {
+            event.preventDefault();
+          }}
+        >
+          <Popover
+            offset={8}
+            theme={PopoverTheme.Dark}
+            button={(buttonProps) => (
+              <ToolbarButton
+                icon={<Styles />}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
+                {...buttonProps}
+              />
+            )}
+          >
+            <div className={"text-medium-label"}>Paragraph style</div>
+            <div className={"text-small-label"}>Text color</div>
+            <ColorPalette
+              presetColors={[
+                {
+                  value: "#00A99D",
+                  themeIndex: 1,
+                },
+                {
+                  value: "#FFCE53",
+                  themeIndex: 2,
+                },
+                {
+                  value: "rgba(129, 162, 178,0.1)",
+                  themeIndex: 3,
+                },
+              ]}
+              handleColorChange={(color) => {}}
+              selectedThemeIndex={3}
+            ></ColorPalette>
+            <SliderInput
+              initialInputValue={14}
+              label={"Font size"}
+              handleValueChange={(value) => {}}
+              theme={SliderTheme.Dark}
+              unit={"px"}
+              minimum={14}
+            />
+            <SegmentedControl
+              label={"Alignment"}
+              options={[
+                { label: "Left", value: "left", icon: <AlignLeft /> },
+                { label: "Center", value: "center", icon: <AlignCenter /> },
+              ]}
+              selectedValue={"left"}
+              onClickHandler={() => {}}
+              theme={SegmentedControlTheme.Dark}
+            />
+          </Popover>
+        </div>
+      )}
+      {disabledStyle && (
+        <>
+          {config.disabledStyleOption === "1" && (
+            <div
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
+            >
+              <ToolbarButton
+                icon={<Styles />}
+                tooltip={{ content: "Styles unavailable" }}
+                disabled
+                className="style-disabled"
+              />
+            </div>
+          )}
+          {config.disabledStyleOption === "2" && (
+            <div
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
+            >
+              <Popover
+                offset={8}
+                theme={PopoverTheme.Dark}
+                button={(buttonProps) => (
+                  <ToolbarButton
+                    icon={<Styles />}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                    }}
+                    {...buttonProps}
+                  />
+                )}
+              >
+                <div className={"text-medium-label"}>Paragraph style</div>
+                <Tooltip wrapTarget={true} content={"Cannot change color"}>
+                  <div className={"style-disabled"}>
+                    <div className={"text-small-label"}>Text color</div>
+                    <ColorPalette
+                      presetColors={[
+                        {
+                          value: "#00A99D",
+                          themeIndex: 1,
+                        },
+                        {
+                          value: "#FFCE53",
+                          themeIndex: 2,
+                        },
+                        {
+                          value: "rgba(129, 162, 178,0.1)",
+                          themeIndex: 3,
+                        },
+                      ]}
+                      handleColorChange={(color) => {}}
+                      selectedThemeIndex={3}
+                    ></ColorPalette>
+                  </div>
+                </Tooltip>
+                <SliderInput
+                  initialInputValue={14}
+                  label={"Font size"}
+                  handleValueChange={(value) => {}}
+                  theme={SliderTheme.Dark}
+                  unit={"px"}
+                  minimum={14}
+                />
+                <Tooltip wrapTarget={true} content={"Cannot change alignment"}>
+                  <div className={"style-disabled"}>
+                    <SegmentedControl
+                      label={"Alignment"}
+                      options={[
+                        { label: "Left", value: "left", icon: <AlignLeft /> },
+                        { label: "Center", value: "center", icon: <AlignCenter /> },
+                      ]}
+                      selectedValue={"left"}
+                      onClickHandler={() => {}}
+                      theme={SegmentedControlTheme.Dark}
+                    />
+                  </div>
+                </Tooltip>
+              </Popover>
+            </div>
+          )}
+          {config.disabledStyleOption === "3" && (
+            <div
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
+            >
+              <Popover
+                offset={8}
+                theme={PopoverTheme.Dark}
+                button={(buttonProps) => (
+                  <ToolbarButton
+                    icon={<Styles />}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                    }}
+                    {...buttonProps}
+                  />
+                )}
+              >
+                <div className={"text-medium-label"}>Paragraph style</div>
+                <SliderInput
+                  initialInputValue={14}
+                  label={"Font size"}
+                  handleValueChange={(value) => {}}
+                  theme={SliderTheme.Dark}
+                  unit={"px"}
+                  minimum={14}
+                />
+              </Popover>
+            </div>
+          )}
+        </>
+      )}
+      {config.disabledStyleOption === "4" && (
+        // Not sure why, but the toolbar closes when you click this button
+        <OptionMenu
+          button={
+            <ToolbarButton
+              icon={<FontSize />}
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
+            />
+          }
+        >
+          <OptionMenuItem selected>14</OptionMenuItem>
+          <OptionMenuItem>16</OptionMenuItem>
+          <OptionMenuItem>20</OptionMenuItem>
+          <OptionMenuItem>24</OptionMenuItem>
+          <OptionMenuItem>32</OptionMenuItem>
+        </OptionMenu>
+        // <div
+        //   onMouseDown={(event) => {
+        //     event.preventDefault();
+        //   }}
+        // >
+        // </div>
       )}
     </Toolbar>
   );

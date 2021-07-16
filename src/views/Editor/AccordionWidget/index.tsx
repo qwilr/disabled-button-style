@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { CSSTransition } from "react-transition-group";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 import forceReflow from "kaleidoscope/src/utils/forceReflow";
-import TextEditor, { TextEditorBlock } from "views/TextEditor";
+import TextEditor, { TextEditorBlock, TextEditorMark } from "views/TextEditor";
 import WidgetSelector from "views/Editor/WidgetSelector";
 
 interface AccordionWidgetProps {
@@ -54,9 +54,9 @@ const AccordionWidget: FC<AccordionWidgetProps> = ({ children, headerText, bodyT
                 size={ButtonSize.Small}
                 icon={
                   isOpen ? (
-                    <MarkerArrowDown style={{ color: "inherit" }} />
+                    <MarkerArrowDown style={{ color: "white" }} />
                   ) : (
-                    <MarkerArrowRight style={{ color: "inherit" }} />
+                    <MarkerArrowRight style={{ color: "white" }} />
                   )
                 }
                 aria-label={isOpen ? "Collapse" : "Expand"}
@@ -65,6 +65,13 @@ const AccordionWidget: FC<AccordionWidgetProps> = ({ children, headerText, bodyT
             </div>
             <div className="accordion-card-widget__header-text">
               <TextEditor
+                allow={[
+                  TextEditorBlock.H1,
+                  TextEditorBlock.H2,
+                  TextEditorBlock.Paragraph,
+                  TextEditorMark.Bold,
+                  TextEditorMark.Italic,
+                ]}
                 placeholder="Add a heading"
                 value={[
                   {
@@ -72,6 +79,7 @@ const AccordionWidget: FC<AccordionWidgetProps> = ({ children, headerText, bodyT
                     children: [{ text: `${headerText}` }],
                   },
                 ]}
+                disabledStyle
               />
             </div>
           </div>

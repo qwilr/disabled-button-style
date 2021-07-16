@@ -1,6 +1,6 @@
 import React, { FC, useContext, useState } from "react";
 import Block from "./Block";
-import TextEditor, { TextEditorBlock } from "../TextEditor";
+import TextEditor, { H1Element, ParagraphElement, TextEditorBlock } from "../TextEditor";
 import { EditorWrapper } from ".";
 import { Descendant } from "slate";
 import ImageWidget from "./ImageWidget";
@@ -8,6 +8,7 @@ import TwoColumnsWidget from "./TwoColumnsWidget";
 import { TextInput } from "kaleidoscope/src";
 import { ConfigContext } from "views/App/AppConfig";
 import WidgetSelector from "./WidgetSelector";
+import { allowStateChanges } from "mobx/lib/internal";
 
 const Page: FC = () => {
   const config = useContext(ConfigContext);
